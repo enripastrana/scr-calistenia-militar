@@ -1,3 +1,10 @@
 Continuar 1.txt
 reocrdar.txt
 .claude/settings.local.json
+.env
+node_modules
+__pycache__
+dist
+.next
+.venv
+.vercel
