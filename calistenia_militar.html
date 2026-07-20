@@ -1,0 +1,4017 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programa de Calistenia Militar</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'">
+<style>
+  :root {
+    --army-dark: #1a2b0e;
+    --army-green: #2d4a1e;
+    --army-olive: #4a5c2a;
+    --army-khaki: #8b8b4a;
+    --army-tan: #c8b560;
+    --army-light: #e8d98a;
+    --army-cream: #f5f0dc;
+    --army-red: #8b1a1a;
+    --army-gold: #d4a017;
+    --beginner: #2e7d32;
+    --intermediate: #e65100;
+    --advanced: #b71c1c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Courier New', 'Consolas', monospace;
+    background: var(--army-dark);
+    color: var(--army-cream);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0d1a06 0%, #1a2b0e 40%, #2d4a1e 100%);
+    border-bottom: 3px solid var(--army-tan);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '★ ★ ★ ★ ★';
+    display: block;
+    font-size: 14px;
+    color: var(--army-tan);
+    letter-spacing: 8px;
+    margin-bottom: 8px;
+  }
+  header::after {
+    content: '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬';
+    display: block;
+    color: var(--army-olive);
+    font-size: 10px;
+    letter-spacing: 1px;
+    margin-top: 8px;
+  }
+  .header-badge {
+    display: inline-block;
+    border: 2px solid var(--army-tan);
+    padding: 4px 16px;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--army-tan);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  h1 {
+    font-size: 2.2em;
+    color: var(--army-light);
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    line-height: 1.2;
+  }
+  .subtitle {
+    color: var(--army-tan);
+    font-size: 0.9em;
+    letter-spacing: 3px;
+    margin-top: 6px;
+  }
+
+  /* PERFIL */
+  .profile-bar {
+    background: rgba(0,0,0,0.4);
+    border-bottom: 2px solid var(--army-olive);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+  .profile-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+  }
+  .profile-item .label {
+    color: var(--army-khaki);
+    text-transform: uppercase;
+    font-size: 0.75em;
+    letter-spacing: 2px;
+  }
+  .profile-item .value {
+    color: var(--army-gold);
+    font-weight: bold;
+    font-size: 1em;
+  }
+  .profile-sep { color: var(--army-olive); }
+
+  /* ALERT BMI */
+  .bmi-alert {
+    background: rgba(139,26,26,0.2);
+    border: 1px solid var(--army-red);
+    border-left: 4px solid var(--army-red);
+    margin: 16px 20px;
+    padding: 10px 16px;
+    border-radius: 2px;
+    font-size: 0.85em;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .bmi-alert strong { color: var(--army-tan); }
+
+  /* TABS */
+  .tabs-wrapper {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 0 16px;
+  }
+  .tab-buttons {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 0;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    border-top: 3px solid transparent;
+  }
+  .tab-btn[data-tab="beginner"] { background: #1a3a1c; color: #4caf50; border-bottom: none; }
+  .tab-btn[data-tab="beginner"].active { background: #2e7d32; color: #fff; border-top-color: #4caf50; }
+  .tab-btn[data-tab="intermediate"] { background: #3a1e0a; color: #ff9800; border-bottom: none; }
+  .tab-btn[data-tab="intermediate"].active { background: #e65100; color: #fff; border-top-color: #ff9800; }
+  .tab-btn[data-tab="advanced"] { background: #3a0a0a; color: #ef5350; border-bottom: none; }
+  .tab-btn[data-tab="advanced"].active { background: #b71c1c; color: #fff; border-top-color: #ef5350; }
+  .tab-btn[data-tab="nutrition"] { background: #1a1a3a; color: #7986cb; border-bottom: none; }
+  .tab-btn[data-tab="nutrition"].active { background: #283593; color: #fff; border-top-color: #7986cb; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* SECTION PANEL */
+  .panel {
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--army-olive);
+    padding: 20px;
+    margin-bottom: 16px;
+    border-radius: 2px;
+    position: relative;
+  }
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--army-olive);
+  }
+  .panel-icon { font-size: 1.4em; }
+  .panel-title {
+    font-size: 1em;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--army-light);
+  }
+  .panel-sub {
+    font-size: 0.75em;
+    color: var(--army-khaki);
+    letter-spacing: 1px;
+  }
+
+  /* LEVEL BADGE */
+  .level-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 0.7em;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border-radius: 2px;
+    margin-left: auto;
+  }
+  .badge-beginner { background: var(--beginner); color: #fff; }
+  .badge-intermediate { background: var(--intermediate); color: #fff; }
+  .badge-advanced { background: var(--advanced); color: #fff; }
+
+  /* WEEK SCHEDULE */
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 600px) { .week-grid { grid-template-columns: repeat(4, 1fr); } }
+  .day-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--army-olive);
+    padding: 10px 6px;
+    text-align: center;
+    border-radius: 2px;
+  }
+  .day-card.rest { border-color: #333; opacity: 0.6; }
+  .day-card.active-day { border-color: var(--army-tan); background: rgba(212,160,23,0.08); }
+  .day-name {
+    font-size: 0.65em;
+    letter-spacing: 2px;
+    color: var(--army-khaki);
+    text-transform: uppercase;
+  }
+  .day-type {
+    font-size: 0.7em;
+    margin-top: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .day-type.rest-type { color: #666; }
+  .day-type.train-type { color: var(--army-tan); }
+
+  /* EXERCISE TABLE */
+  .ex-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 0.82em; }
+  .ex-table th {
+    background: rgba(255,255,255,0.07);
+    color: var(--army-khaki);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 0.75em;
+    border-bottom: 1px solid var(--army-olive);
+  }
+  .ex-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    vertical-align: top;
+  }
+  .ex-table tr:hover td { background: rgba(255,255,255,0.03); }
+  .ex-name { color: var(--army-cream); font-weight: bold; cursor: pointer; }
+  .ex-name:hover { color: var(--army-tan); text-decoration: underline; }
+  .ex-sets { color: var(--army-gold); text-align: center; }
+  .ex-reps { color: #90caf9; text-align: center; }
+  .ex-rest { color: #a5d6a7; text-align: center; }
+  .ex-note { color: var(--army-khaki); font-size: 0.85em; font-style: italic; }
+  .muscle-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 0.75em;
+    color: var(--army-khaki);
+    margin: 1px;
+  }
+
+  /* CIRCUIT BOX */
+  .circuit-box {
+    background: rgba(212,160,23,0.06);
+    border: 1px solid rgba(212,160,23,0.3);
+    padding: 14px;
+    margin-bottom: 14px;
+    border-radius: 2px;
+  }
+  .circuit-title {
+    color: var(--army-gold);
+    font-size: 0.85em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .circuit-tag {
+    font-size: 0.7em;
+    background: var(--army-gold);
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+  .circuit-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 6px;
+  }
+  .circuit-item {
+    background: rgba(0,0,0,0.3);
+    padding: 6px 10px;
+    border-left: 3px solid var(--army-olive);
+    font-size: 0.8em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .circuit-item .ci-name { color: var(--army-cream); }
+  .circuit-item .ci-count { color: var(--army-gold); font-weight: bold; }
+
+  /* PROGRESS BARS */
+  .progress-container { margin-bottom: 10px; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75em;
+    margin-bottom: 3px;
+  }
+  .progress-label span:first-child { color: var(--army-khaki); text-transform: uppercase; letter-spacing: 1px; }
+  .progress-label span:last-child { color: var(--army-tan); }
+  .progress-bar-bg {
+    background: rgba(255,255,255,0.08);
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  /* TIPS BOX */
+  .tips-box {
+    background: rgba(0,0,0,0.25);
+    border-left: 3px solid var(--army-tan);
+    padding: 12px 16px;
+    margin-top: 14px;
+  }
+  .tips-title {
+    font-size: 0.75em;
+    color: var(--army-tan);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+  .tips-list { list-style: none; }
+  .tips-list li {
+    font-size: 0.8em;
+    color: var(--army-cream);
+    padding: 3px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+  .tips-list li::before {
+    content: '▶';
+    position: absolute;
+    left: 0;
+    color: var(--army-olive);
+    font-size: 0.7em;
+    top: 5px;
+  }
+
+  /* NUTRITION */
+  .macro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .macro-card {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--army-olive);
+    padding: 14px;
+    text-align: center;
+    border-radius: 2px;
+  }
+  .macro-card .macro-value {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--army-gold);
+    line-height: 1;
+  }
+  .macro-card .macro-unit { font-size: 0.7em; color: var(--army-khaki); }
+  .macro-card .macro-name {
+    font-size: 0.7em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--army-khaki);
+    margin-top: 6px;
+  }
+  .macro-card .macro-pct {
+    font-size: 0.75em;
+    color: var(--army-tan);
+    margin-top: 2px;
+  }
+
+  .meal-plan { margin-bottom: 16px; }
+  .meal-card {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 8px;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .meal-header {
+    background: rgba(255,255,255,0.06);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .meal-time {
+    color: var(--army-gold);
+    font-size: 0.75em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    min-width: 70px;
+  }
+  .meal-name {
+    color: var(--army-cream);
+    font-size: 0.85em;
+    font-weight: bold;
+    flex: 1;
+  }
+  .meal-kcal {
+    color: var(--army-tan);
+    font-size: 0.75em;
+    letter-spacing: 1px;
+  }
+  .meal-body {
+    padding: 12px 14px;
+  }
+  .food-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.8em;
+  }
+  .food-item:last-child { border-bottom: none; }
+  .food-name { color: var(--army-cream); }
+  .food-amount { color: var(--army-gold); font-size: 0.85em; }
+  .food-macro { color: var(--army-khaki); font-size: 0.75em; }
+
+  /* WATER TRACKER */
+  .water-bar {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .water-unit {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #1565c0;
+    border-radius: 3px;
+    background: rgba(21,101,192,0.3);
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+  .water-unit.filled { background: #1565c0; color: #fff; }
+  .water-unit:hover { background: rgba(21,101,192,0.6); }
+
+  /* TIMER */
+  .timer-widget {
+    background: rgba(0,0,0,0.5);
+    border: 2px solid var(--army-tan);
+    padding: 20px;
+    text-align: center;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  .timer-display {
+    font-size: 3.5em;
+    font-weight: bold;
+    color: var(--army-tan);
+    letter-spacing: 4px;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 20px rgba(212,160,23,0.5);
+  }
+  .timer-label { color: var(--army-khaki); font-size: 0.7em; letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+  .timer-controls { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+  .timer-preset {
+    padding: 6px 14px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--army-olive);
+    color: var(--army-cream);
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75em;
+    letter-spacing: 1px;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .timer-preset:hover { background: var(--army-olive); }
+  .btn {
+    padding: 8px 20px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .btn-start { background: var(--beginner); color: #fff; }
+  .btn-start:hover { background: #388e3c; }
+  .btn-pause { background: var(--army-khaki); color: #000; }
+  .btn-pause:hover { background: var(--army-tan); }
+  .btn-reset { background: rgba(255,255,255,0.1); color: var(--army-cream); border: 1px solid var(--army-olive); }
+  .btn-reset:hover { background: rgba(255,255,255,0.2); }
+
+  /* CHECKLIST */
+  .check-list { list-style: none; }
+  .check-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.82em;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.2s;
+  }
+  .check-list li input[type="checkbox"] { accent-color: var(--army-tan); width: 16px; height: 16px; cursor: pointer; flex-shrink: 0; }
+  .check-list li.checked { opacity: 0.5; text-decoration: line-through; }
+  .check-list li span { color: var(--army-cream); }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 14px;
+    color: var(--army-khaki);
+    font-size: 0.7em;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid var(--army-olive);
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .stat-box {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--army-olive);
+    padding: 10px;
+    text-align: center;
+  }
+  .stat-box .stat-val { font-size: 1.5em; color: var(--army-gold); font-weight: bold; }
+  .stat-box .stat-lbl { font-size: 0.65em; color: var(--army-khaki); text-transform: uppercase; letter-spacing: 2px; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid var(--army-olive);
+    color: var(--army-khaki);
+    font-size: 0.7em;
+    letter-spacing: 2px;
+    margin-top: 30px;
+  }
+  footer::before {
+    content: '★ ';
+    color: var(--army-tan);
+  }
+  footer::after {
+    content: ' ★';
+    color: var(--army-tan);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    h1 { font-size: 1.4em; letter-spacing: 3px; }
+    .tab-btn { font-size: 0.65em; padding: 10px 4px; letter-spacing: 1px; }
+    .profile-bar { gap: 14px; }
+    .week-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* DAY PLAN */
+  .day-plan { margin-bottom: 16px; }
+  .day-row {
+    display: grid;
+    grid-template-columns: 72px 1fr 100px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-left: 4px solid #333;
+    margin-bottom: 5px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .day-row.train-row  { border-left-color: var(--army-tan); }
+  .day-row.hiit-row   { border-left-color: #1976d2; }
+  .day-row.cardio-row { border-left-color: #00897b; }
+  .day-row.rest-row   { border-left-color: #555; opacity: 0.65; }
+  .day-row.today-row  {
+    border-left-color: #90caf9 !important;
+    opacity: 1 !important;
+    box-shadow: 0 0 12px rgba(144,202,249,0.18);
+  }
+  .dr-day {
+    background: rgba(0,0,0,0.45);
+    padding: 10px 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  .dr-day-num  { font-size: 1.5em; font-weight: bold; color: var(--army-tan); line-height: 1; }
+  .dr-day-name { font-size: 0.6em; text-transform: uppercase; letter-spacing: 2px; color: var(--army-khaki); margin-top: 2px; }
+  .today-row .dr-day-num  { color: #90caf9; }
+  .today-row .dr-day-name { color: #90caf9; }
+  .today-badge {
+    font-size: 0.5em; background: #1565c0; color: #fff;
+    padding: 1px 5px; border-radius: 2px; margin-top: 4px;
+    letter-spacing: 1px; display: none;
+  }
+  .today-row .today-badge { display: block; }
+  .dr-body { padding: 10px 14px; }
+  .dr-session-name {
+    font-size: 0.85em; font-weight: bold; color: var(--army-cream);
+    margin-bottom: 5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .dr-stype {
+    font-size: 0.62em; padding: 2px 8px; border-radius: 2px;
+    font-weight: bold; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .stype-fuerza  { background: rgba(212,160,23,0.18); color: var(--army-gold);  border: 1px solid rgba(212,160,23,0.4); }
+  .stype-hiit    { background: rgba(25,118,210,0.18); color: #90caf9;           border: 1px solid rgba(25,118,210,0.4); }
+  .stype-cardio  { background: rgba(0,137,123,0.18);  color: #80cbc4;           border: 1px solid rgba(0,137,123,0.4); }
+  .stype-descanso{ background: rgba(80,80,80,0.18);   color: #888;              border: 1px solid #444; }
+  .dr-exercises  { font-size: 0.76em; color: var(--army-khaki); line-height: 1.7; }
+  .dr-exercises b{ color: var(--army-tan); cursor: pointer; text-decoration: underline dotted; }
+  .dr-meta {
+    padding: 10px 10px; display: flex; flex-direction: column;
+    align-items: flex-end; justify-content: space-between;
+    border-left: 1px solid rgba(255,255,255,0.05);
+  }
+  .dr-duration { font-size: 0.68em; color: var(--army-tan); letter-spacing: 1px; text-align: right; }
+  .dr-link {
+    display: inline-block; padding: 4px 8px;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--army-olive);
+    color: var(--army-cream); text-decoration: none;
+    font-size: 0.62em; letter-spacing: 1px; border-radius: 2px;
+    white-space: nowrap; transition: background 0.2s;
+  }
+  .dr-link:hover { background: var(--army-olive); }
+  .dr-link.no-link { opacity: 0.3; cursor: default; pointer-events: none; }
+  .session-header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .session-days-tag {
+    font-size: 0.65em; background: rgba(212,160,23,0.15);
+    border: 1px solid rgba(212,160,23,0.35); color: var(--army-gold);
+    padding: 2px 10px; border-radius: 2px; letter-spacing: 2px;
+    font-weight: bold;
+  }
+  @media (max-width: 600px) {
+    .day-row { grid-template-columns: 60px 1fr; }
+    .dr-meta { display: none; }
+  }
+
+  /* HOY SYSTEM */
+  .phase-selector { display:flex; gap:5px; margin-bottom:4px; }
+  .phase-btn {
+    flex:1; padding:11px 6px; border:none; cursor:pointer;
+    font-family:'Courier New',monospace; font-size:0.72em;
+    font-weight:bold; letter-spacing:1px; text-transform:uppercase;
+    background:rgba(0,0,0,0.35); color:var(--army-khaki);
+    border-top:3px solid transparent; transition:all 0.2s; line-height:1.4;
+  }
+  .phase-btn:hover { background:rgba(255,255,255,0.06); }
+  .phase-btn.phase-active { color:#fff; background:rgba(255,255,255,0.08); }
+  .phase-btn small { font-size:0.8em; opacity:0.7; display:block; font-weight:normal; letter-spacing:0; }
+  .hoy-date { font-size:1.05em; font-weight:bold; color:var(--army-light); letter-spacing:3px; }
+  .hoy-week-sub { font-size:0.75em; color:var(--army-tan); letter-spacing:2px; margin-top:5px; }
+  .hoy-prog-bg { background:rgba(255,255,255,0.08); height:4px; border-radius:2px; margin-top:10px; overflow:hidden; }
+  .hoy-prog-fill { height:100%; border-radius:2px; transition:width 0.8s; }
+  .hoy-missed {
+    background:rgba(139,26,26,0.15); border:1px solid; border-left-width:4px;
+    padding:10px 14px; border-radius:2px; margin-bottom:10px; font-size:0.82em;
+  }
+  .mc-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+  .mc-cell { text-align:center; padding:8px 3px; border-radius:2px; border:1px solid rgba(255,255,255,0.07); }
+  .mc-lbl { font-size:0.58em; color:var(--army-khaki); letter-spacing:1px; text-transform:uppercase; }
+  .mc-ico { font-size:0.95em; margin-top:3px; font-weight:bold; min-height:16px; }
+  .mc-done { background:rgba(46,125,50,0.2); border-color:#2e7d32; }
+  .mc-done .mc-ico { color:#4caf50; }
+  .mc-today { background:rgba(25,118,210,0.25); border-color:#1976d2; }
+  .mc-today .mc-ico,.mc-today .mc-lbl { color:#90caf9; }
+  .mc-missed { opacity:0.45; }
+  .mc-missed .mc-ico { color:#555; }
+  .mc-rest-cell { opacity:0.35; }
+  .mc-rest-cell .mc-ico { color:#444; font-size:0.7em; }
+  .hoy-rest-card { text-align:center; }
+  .hoy-rest-title { font-size:1em; font-weight:bold; color:var(--army-light); letter-spacing:3px; text-transform:uppercase; margin-bottom:8px; }
+  .hoy-rest-desc { font-size:0.82em; color:var(--army-khaki); margin-bottom:14px; line-height:1.6; }
+  .rest-tips-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:7px; }
+  .rest-tip { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); padding:8px 10px; border-radius:2px; font-size:0.78em; color:var(--army-cream); }
+  .hoy-workout-hdr { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
+  .hoy-workout-title { font-size:0.88em; font-weight:bold; color:var(--army-light); letter-spacing:2px; text-transform:uppercase; }
+  .hoy-workout-dur { font-size:0.72em; margin-top:3px; letter-spacing:1px; }
+  .hoy-prog-wrap { text-align:right; }
+  .hoy-prog-txt { font-size:0.72em; color:var(--army-tan); margin-bottom:3px; }
+  .wk-prog-bg { background:rgba(255,255,255,0.08); height:5px; border-radius:3px; overflow:hidden; width:90px; }
+  .wk-prog-fill { height:100%; border-radius:3px; transition:width 0.4s; }
+  .ex-list { display:flex; flex-direction:column; gap:4px; }
+  .ex-row { border:1px solid rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; transition:opacity 0.25s; }
+  .ex-row-done { opacity:0.4; }
+  .ex-row-lbl { display:grid; grid-template-columns:20px 1fr auto; gap:10px; align-items:center; padding:9px 12px; cursor:pointer; }
+  .ex-row-lbl input[type="checkbox"] { accent-color:var(--army-tan); width:16px; height:16px; flex-shrink:0; }
+  .ex-row-name { font-size:0.82em; color:var(--army-cream); font-weight:bold; }
+  .ex-row-done .ex-row-name { text-decoration:line-through; }
+  .ex-row-note { font-size:0.72em; color:var(--army-khaki); margin-top:2px; line-height:1.4; }
+  .ex-row-meta { display:flex; flex-direction:column; align-items:flex-end; gap:2px; min-width:68px; text-align:right; }
+  .ex-meta-sets { font-size:0.67em; color:var(--army-gold); letter-spacing:1px; }
+  .ex-meta-reps { font-size:0.67em; color:#90caf9; letter-spacing:1px; }
+  .ex-meta-rest { font-size:0.65em; color:#a5d6a7; }
+  .ver-link { display:inline-block; margin-top:10px; font-size:0.72em; color:var(--army-khaki); border-bottom:1px solid var(--army-olive); text-decoration:none; letter-spacing:1px; }
+  .ver-link:hover { color:var(--army-tan); }
+  .complete-wrap { display:flex; gap:8px; margin:12px 0; flex-wrap:wrap; }
+  .complete-btn {
+    flex:1; padding:13px; border:none; cursor:pointer;
+    font-family:'Courier New',monospace; font-size:0.85em; font-weight:bold;
+    letter-spacing:2px; text-transform:uppercase; color:#fff; border-radius:2px;
+    transition:opacity 0.2s; min-height:46px;
+  }
+  .complete-btn:disabled { cursor:default; }
+  .reset-sm { padding:13px 14px; background:rgba(255,255,255,0.05); border:1px solid var(--army-olive); color:var(--army-khaki); cursor:pointer; font-family:'Courier New',monospace; font-size:0.68em; letter-spacing:1px; border-radius:2px; }
+  .reset-sm:hover { background:rgba(255,255,255,0.09); }
+  .hm-list { display:flex; flex-direction:column; gap:5px; }
+  .hm-card { border:1px solid rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; transition:border-color 0.2s; }
+  .hm-done { border-color:rgba(46,125,50,0.5) !important; background:rgba(46,125,50,0.05); }
+  .hm-head { display:flex; align-items:center; gap:8px; padding:9px 12px; cursor:pointer; background:rgba(0,0,0,0.22); flex-wrap:wrap; }
+  .hm-icon { font-size:1em; flex-shrink:0; }
+  .hm-time { font-size:0.75em; color:var(--army-gold); font-weight:bold; letter-spacing:2px; min-width:40px; }
+  .hm-name { flex:1; font-size:0.8em; color:var(--army-cream); font-weight:bold; }
+  .hm-kcal { font-size:0.68em; color:var(--army-tan); }
+  .hm-chk { display:flex; align-items:center; gap:4px; font-size:0.7em; color:var(--army-khaki); cursor:pointer; flex-shrink:0; }
+  .hm-chk input { accent-color:#2e7d32; }
+  .hm-body { padding:10px 12px; display:none; }
+  .hm-body.hm-open { display:block; }
+  .hm-note { font-size:0.74em; color:var(--army-tan); font-style:italic; margin-bottom:8px; }
+  .meal-row { display:flex; gap:8px; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.76em; flex-wrap:wrap; }
+  .meal-row:last-child { border-bottom:none; }
+  .mr-name { flex:1; color:var(--army-cream); min-width:140px; }
+  .mr-amount { color:var(--army-gold); min-width:80px; }
+  .mr-macro { color:var(--army-khaki); }
+  .dc-list { display:flex; flex-direction:column; gap:4px; }
+  .dc-item { display:flex; align-items:center; gap:10px; padding:8px 12px; border:1px solid rgba(255,255,255,0.06); border-radius:2px; cursor:pointer; font-size:0.82em; color:var(--army-cream); user-select:none; transition:opacity 0.2s; }
+  .dc-item input[type="checkbox"] { accent-color:var(--army-tan); width:16px; height:16px; flex-shrink:0; }
+  .dc-done { opacity:0.4; }
+  .dc-done span:last-child { text-decoration:line-through; }
+  .tab-btn[data-tab="hoy"] { background:#0a1929; color:#90caf9; font-size:0.85em; }
+  .tab-btn[data-tab="hoy"].active { background:#1565c0; color:#fff; border-top-color:#90caf9; }
+  @media (max-width:600px) {
+    .ex-row-lbl { grid-template-columns:20px 1fr; }
+    .ex-row-meta { display:none; }
+    .mc-grid { gap:3px; }
+  }
+
+  /* =================== MODAL EJERCICIO =================== */
+  #ex-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75); z-index: 9999;
+    align-items: flex-end; justify-content: center;
+  }
+  #ex-modal-overlay.exm-open { display: flex; }
+  #ex-modal {
+    background: #1e2d14; border: 1px solid var(--army-olive);
+    border-top: 3px solid var(--army-tan);
+    width: 100%; max-width: 560px; max-height: 90vh;
+    overflow-y: auto; border-radius: 4px 4px 0 0;
+    position: relative; animation: slideUp 0.25s ease;
+  }
+  @media (min-width: 600px) {
+    #ex-modal-overlay { align-items: center; }
+    #ex-modal { border-radius: 4px; max-height: 85vh; }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(60px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  .exm-close {
+    position: absolute; top: 10px; right: 12px;
+    background: none; border: none; color: var(--army-khaki);
+    font-size: 1.1em; cursor: pointer; line-height: 1;
+  }
+  .exm-close:hover { color: var(--army-cream); }
+  .exm-header { padding: 18px 18px 12px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .exm-title { font-size: 1em; font-weight: bold; color: var(--army-light); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; padding-right: 24px; }
+  .exm-muscles-row { font-size: 0.75em; margin-bottom: 10px; }
+  .exm-label { color: var(--army-khaki); letter-spacing: 1px; margin-right: 6px; }
+  .exm-muscles-val { color: var(--army-tan); }
+  .exm-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+  .exm-stat { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.07); padding: 6px 12px; border-radius: 2px; text-align: center; flex: 1; min-width: 80px; }
+  .exm-stat .exm-label { display: block; font-size: 0.62em; margin-bottom: 2px; margin-right: 0; }
+  .exm-stat-val { font-size: 0.82em; color: var(--army-cream); font-weight: bold; }
+  .exm-body { padding: 14px 18px 20px; }
+  .exm-section { margin-bottom: 14px; }
+  .exm-section-title { font-size: 0.68em; color: var(--army-gold); letter-spacing: 2px; text-transform: uppercase; font-weight: bold; margin-bottom: 7px; border-bottom: 1px solid rgba(212,160,23,0.2); padding-bottom: 4px; }
+  .exm-steps { padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .exm-steps li { font-size: 0.82em; color: var(--army-cream); line-height: 1.5; padding: 6px 10px; background: rgba(0,0,0,0.2); border-radius: 2px; border-left: 3px solid var(--army-olive); }
+  .exm-tip-box { font-size: 0.82em; color: var(--army-cream); background: rgba(46,125,50,0.12); border: 1px solid rgba(46,125,50,0.4); border-left: 3px solid #4caf50; padding: 8px 12px; border-radius: 2px; line-height: 1.5; }
+  .exm-mistake-box { font-size: 0.82em; color: var(--army-cream); background: rgba(139,26,26,0.12); border: 1px solid rgba(139,26,26,0.4); border-left: 3px solid #ef5350; padding: 8px 12px; border-radius: 2px; line-height: 1.5; }
+  .exm-video-wrap {
+    position: relative; width: 100%; padding-top: 56.25%; /* 16:9 */
+    background: #000; border-radius: 2px; overflow: hidden; margin-bottom: 14px;
+  }
+  .exm-video-wrap iframe {
+    position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+  }
+  .exm-video-placeholder {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 10px;
+    background: rgba(0,0,0,0.7); cursor: pointer;
+  }
+  .exm-video-placeholder .play-icon {
+    width: 56px; height: 56px; background: #c62828; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4em; transition: transform 0.15s;
+  }
+  .exm-video-placeholder:hover .play-icon { transform: scale(1.1); }
+  .exm-video-placeholder .play-label {
+    font-size: 0.75em; color: #fff; letter-spacing: 2px; text-transform: uppercase;
+  }
+  .exm-yt-btn {
+    display: block; text-align: center; margin-top: 10px;
+    padding: 10px; background: rgba(198,40,40,0.15); color: #ef9a9a;
+    text-decoration: none; font-size: 0.75em; font-weight: bold;
+    letter-spacing: 1px; border-radius: 2px; border: 1px solid rgba(198,40,40,0.4);
+    transition: background 0.2s;
+  }
+  .exm-yt-btn:hover { background: rgba(198,40,40,0.3); }
+  .ex-row-name { cursor: pointer; }
+  .ex-row-name:hover { color: var(--army-tan); text-decoration: underline; }
+  /* Nombres clicables en resúmenes de día */
+  .dr-exercises b { cursor: pointer; color: var(--army-tan); text-decoration: underline dotted; transition: color 0.15s; }
+  .dr-exercises b:hover { color: var(--army-light); text-decoration: underline; }
+  /* Botón de video en lista de ejercicios */
+  .ex-vid-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.65em; color: #c62828; border: 1px solid rgba(198,40,40,0.5);
+    background: rgba(198,40,40,0.1); padding: 2px 7px; border-radius: 2px;
+    cursor: pointer; margin-left: 6px; vertical-align: middle;
+    white-space: nowrap; transition: background 0.15s;
+  }
+  .ex-vid-btn:hover { background: rgba(198,40,40,0.25); }
+
+  /* SCROLL */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--army-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--army-olive); border-radius: 3px; }
+
+  .highlight-box {
+    background: rgba(212,160,23,0.1);
+    border: 1px solid rgba(212,160,23,0.4);
+    padding: 10px 14px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+    font-size: 0.82em;
+    color: var(--army-cream);
+  }
+  .highlight-box strong { color: var(--army-gold); }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-size: 0.7em;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-left: 6px;
+  }
+  .tag-cardio { background: rgba(21,101,192,0.3); color: #90caf9; border: 1px solid #1565c0; }
+  .tag-fuerza { background: rgba(139,26,26,0.3); color: #ef9a9a; border: 1px solid var(--army-red); }
+  .tag-core { background: rgba(74,92,42,0.5); color: #c5e1a5; border: 1px solid var(--army-olive); }
+  .tag-descanso { background: rgba(100,100,100,0.2); color: #aaa; border: 1px solid #555; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">Programa Oficial</div>
+  <h1>Calistenia Militar</h1>
+  <p class="subtitle">Sistema de Entrenamiento de Élite</p>
+</header>
+
+<!-- PERFIL DEL SOLDADO -->
+<div class="profile-bar">
+  <div class="profile-item">
+    <span class="label">Edad</span>
+    <span class="value">40 años</span>
+  </div>
+  <span class="profile-sep">|</span>
+  <div class="profile-item">
+    <span class="label">Peso</span>
+    <span class="value">86 kg</span>
+  </div>
+  <span class="profile-sep">|</span>
+  <div class="profile-item">
+    <span class="label">Talla</span>
+    <span class="value">168 cm</span>
+  </div>
+  <span class="profile-sep">|</span>
+  <div class="profile-item">
+    <span class="label">IMC</span>
+    <span class="value">30.5 ⚠</span>
+  </div>
+  <span class="profile-sep">|</span>
+  <div class="profile-item">
+    <span class="label">TMB</span>
+    <span class="value">1,820 kcal</span>
+  </div>
+  <span class="profile-sep">|</span>
+  <div class="profile-item">
+    <span class="label">TDEE</span>
+    <span class="value">~2,500 kcal</span>
+  </div>
+</div>
+
+<div class="bmi-alert">
+  <strong>⚠ EVALUACIÓN INICIAL:</strong> IMC 30.5 — Rango Sobrepeso/Obesidad I. El programa está diseñado para reducción de grasa corporal progresiva manteniendo masa muscular. Se recomienda consultar médico antes de iniciar si existen condiciones cardiovasculares. Objetivo: llegar a peso ideal ~63–73 kg (IMC 22–26).
+</div>
+
+<!-- TABS PRINCIPALES -->
+<div class="tabs-wrapper">
+  <div class="tab-buttons">
+    <button class="tab-btn active" data-tab="hoy">★ HOY</button>
+    <button class="tab-btn" data-tab="beginner">◆ Principiante</button>
+    <button class="tab-btn" data-tab="intermediate">◆ Intermedio</button>
+    <button class="tab-btn" data-tab="advanced">◆ Avanzado</button>
+    <button class="tab-btn" data-tab="nutrition">◆ Nutrición</button>
+  </div>
+
+  <!-- ========================= HOY ========================= -->
+  <div class="tab-content active" id="tab-hoy">
+
+    <div class="phase-selector">
+      <button class="phase-btn phase-active" data-level="beginner" onclick="setLevel('beginner')">◆ Principiante<small>Semanas 1–12</small></button>
+      <button class="phase-btn" data-level="intermediate" onclick="setLevel('intermediate')">◆ Intermedio<small>Semanas 13–28</small></button>
+      <button class="phase-btn" data-level="advanced" onclick="setLevel('advanced')">◆ Avanzado<small>Semana 29+</small></button>
+    </div>
+
+    <div class="panel" style="text-align:center;padding:16px 20px 14px">
+      <div id="hoy-date" class="hoy-date">CARGANDO...</div>
+      <div id="hoy-semana" class="hoy-week-sub"></div>
+      <div class="hoy-prog-bg"><div id="hoy-prog-bar" class="hoy-prog-fill" style="width:0%"></div></div>
+    </div>
+
+    <div id="hoy-missed" class="hoy-missed" style="display:none"></div>
+    <div id="hoy-cal" class="panel" style="padding:14px 16px"></div>
+    <div id="hoy-workout"></div>
+
+    <div class="complete-wrap">
+      <button class="complete-btn" id="hoy-complete-btn" onclick="completeDay()">✓ Marcar sesión completa</button>
+      <button class="reset-sm" onclick="resetProgram()">↩ Reiniciar</button>
+      <button class="reset-sm" onclick="exportData()" title="Guarda tu progreso en un archivo JSON">⬇ Exportar</button>
+      <button class="reset-sm" onclick="document.getElementById('import-file').click()" title="Restaura progreso desde un backup">⬆ Importar</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+    </div>
+
+    <div id="hoy-meals"></div>
+    <div id="hoy-checks"></div>
+
+  </div>
+
+  <!-- ========================= PRINCIPIANTE ========================= -->
+  <div class="tab-content" id="tab-beginner">
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-icon">🎯</span>
+        <div>
+          <div class="panel-title">Fase 1 — Principiante</div>
+          <div class="panel-sub">Semanas 1–12 · Construcción de base y hábito</div>
+        </div>
+        <span class="level-badge badge-beginner">Nivel 1</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val">3–4</div><div class="stat-lbl">Días/semana</div></div>
+        <div class="stat-box"><div class="stat-val">30–40</div><div class="stat-lbl">Min/sesión</div></div>
+        <div class="stat-box"><div class="stat-val">12</div><div class="stat-lbl">Semanas</div></div>
+        <div class="stat-box"><div class="stat-val">2:1</div><div class="stat-lbl">Trabajo:Descanso</div></div>
+        <div class="stat-box"><div class="stat-val">~400</div><div class="stat-lbl">Kcal/sesión</div></div>
+      </div>
+
+      <div class="highlight-box">
+        <strong>Objetivo de la fase:</strong> Adaptar músculos, tendones y sistema cardiovascular. Aprender la técnica correcta de cada ejercicio. Pérdida de grasa: 0.5–1 kg/semana. No busques excelencia, busca consistencia.
+      </div>
+
+      <!-- Plan día a día -->
+      <div class="section-divider">¿Qué hago cada día? — Plan semanal completo</div>
+      <div class="day-plan" id="plan-beg">
+
+        <div class="day-row train-row" data-day="1">
+          <div class="dr-day"><div class="dr-day-num">LUN</div><div class="dr-day-name">Lunes</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">SESIÓN A — Cuerpo Completo <span class="dr-stype stype-fuerza">Fuerza</span></div>
+            <div class="dr-exercises">
+              <b>Flexiones</b> desde rodillas (3×8–12) · <b>Sentadilla goblet</b> (3×15) · <b>Remo invertido</b> (3×8–10) · <b>Zancadas alternas</b> (3×10 c/u) · <b>Plancha frontal</b> (3×20–30 seg) · <b>Glute Bridge</b> (3×15)
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">35–40 min</div><a class="dr-link" href="#beg-a">Ver sesión ↓</a></div>
+        </div>
+
+        <div class="day-row rest-row" data-day="2">
+          <div class="dr-day"><div class="dr-day-num">MAR</div><div class="dr-day-name">Martes</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">DESCANSO ACTIVO <span class="dr-stype stype-descanso">Recuperación</span></div>
+            <div class="dr-exercises">
+              Caminata suave 20–30 min al aire libre · Estiramientos articulares de cadera y hombros · Sin cargas ni fuerza hoy — el músculo crece en el descanso
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">20–30 min</div><span class="dr-link no-link">Descanso</span></div>
+        </div>
+
+        <div class="day-row hiit-row" data-day="3">
+          <div class="dr-day"><div class="dr-day-num">MIÉ</div><div class="dr-day-name">Miércoles</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">SESIÓN B — Cardio + Core <span class="dr-stype stype-hiit">Cardio</span></div>
+            <div class="dr-exercises">
+              <b>Trote suave / marcha rápida</b> 15–20 min · <b>Mountain Climbers lentos</b> (3×20) · <b>Abdominales bicicleta</b> (3×20) · <b>Plancha lateral</b> (2×20 seg c/u) · <b>Burpee modificado sin salto</b> (3×8)
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">35 min</div><a class="dr-link" href="#beg-b">Ver sesión ↓</a></div>
+        </div>
+
+        <div class="day-row rest-row" data-day="4">
+          <div class="dr-day"><div class="dr-day-num">JUE</div><div class="dr-day-name">Jueves</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">DESCANSO ACTIVO <span class="dr-stype stype-descanso">Recuperación</span></div>
+            <div class="dr-exercises">
+              Caminata suave 20–30 min · Movilidad de caderas y tobillos · Foam roller si tienes · Sin ejercicio intenso — el cuerpo a los 40 necesita 48h para recuperar
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">20–30 min</div><span class="dr-link no-link">Descanso</span></div>
+        </div>
+
+        <div class="day-row train-row" data-day="5">
+          <div class="dr-day"><div class="dr-day-num">VIE</div><div class="dr-day-name">Viernes</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">SESIÓN A — Cuerpo Completo (igual que lunes) <span class="dr-stype stype-fuerza">Fuerza</span></div>
+            <div class="dr-exercises">
+              <b>Flexiones</b> (3×8–12) · <b>Sentadilla goblet</b> (3×15) · <b>Remo invertido</b> (3×8–10) · <b>Zancadas alternas</b> (3×10 c/u) · <b>Plancha frontal</b> (3×20–30 seg) · <b>Glute Bridge</b> (3×15) — intenta superar tus reps de lunes
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">35–40 min</div><a class="dr-link" href="#beg-a">Ver sesión ↑</a></div>
+        </div>
+
+        <div class="day-row cardio-row" data-day="6">
+          <div class="dr-day"><div class="dr-day-num">SÁB</div><div class="dr-day-name">Sábado</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">SESIÓN C — Cardio Suave + Movilidad <span class="dr-stype stype-cardio">Cardio suave</span></div>
+            <div class="dr-exercises">
+              <b>Caminata rápida exterior</b> 20–30 min · <b>Saltar cuerda suave</b> 3×2 min · <b>Movilidad articular completa</b> 10 min · <b>Estiramientos / Yoga</b> 10 min
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">30–45 min</div><a class="dr-link" href="#beg-c">Ver sesión ↓</a></div>
+        </div>
+
+        <div class="day-row rest-row" data-day="0">
+          <div class="dr-day"><div class="dr-day-num">DOM</div><div class="dr-day-name">Domingo</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">DESCANSO TOTAL <span class="dr-stype stype-descanso">Libre</span></div>
+            <div class="dr-exercises">
+              Sin entrenamiento. Duerme 8h mínimo · Hidratación 2.5 L · Prepara la ropa y comida de la semana siguiente · El descanso completo es parte del programa
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">—</div><span class="dr-link no-link">Descanso</span></div>
+        </div>
+
+      </div>
+
+      <!-- SESIÓN A -->
+      <div class="section-divider" id="beg-a"><span class="session-header">SESIÓN A — Cuerpo Completo <span class="session-days-tag">LUNES · VIERNES</span></span></div>
+
+      <div class="circuit-box">
+        <div class="circuit-title">
+          <span>Calentamiento Dinámico</span>
+          <span class="circuit-tag">5–8 min</span>
+        </div>
+        <div class="circuit-list">
+          <div class="circuit-item"><span class="ci-name">Marcha en el lugar</span><span class="ci-count">2 min</span></div>
+          <div class="circuit-item"><span class="ci-name">Círculos de hombros</span><span class="ci-count">20 rep</span></div>
+          <div class="circuit-item"><span class="ci-name">Rotación de cadera</span><span class="ci-count">20 rep</span></div>
+          <div class="circuit-item"><span class="ci-name">Sentadilla aérea lenta</span><span class="ci-count">10 rep</span></div>
+          <div class="circuit-item"><span class="ci-name">Flexiones de pared</span><span class="ci-count">10 rep</span></div>
+          <div class="circuit-item"><span class="ci-name">Jumping jacks suaves</span><span class="ci-count">30 seg</span></div>
+        </div>
+      </div>
+
+      <table class="ex-table">
+        <thead>
+          <tr>
+            <th>Ejercicio</th>
+            <th>Músculo</th>
+            <th>Series</th>
+            <th>Reps</th>
+            <th>Descanso</th>
+            <th>Notas técnicas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ex-name">Flexiones (rodillas)</span><span class="tag tag-fuerza">Fuerza</span></td>
+            <td><span class="muscle-tag">Pecho</span><span class="muscle-tag">Tríceps</span><span class="muscle-tag">Hombro</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">8–12</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Cuerpo recto desde rodillas, codos a 45°. Progresar a flexiones completas en semanas 4–6.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Sentadilla Goblet (sin peso)</span><span class="tag tag-fuerza">Fuerza</span></td>
+            <td><span class="muscle-tag">Cuádriceps</span><span class="muscle-tag">Glúteos</span><span class="muscle-tag">Core</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">15</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Pies a lo ancho de hombros, talones en suelo, espalda recta. Descender 90°.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Remo con silla / Remo invertido</span><span class="tag tag-fuerza">Fuerza</span></td>
+            <td><span class="muscle-tag">Espalda</span><span class="muscle-tag">Bíceps</span><span class="muscle-tag">Romboides</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">8–10</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Usar barra baja o bordes de mesa. Cuerpo rígido, codos hacia atrás al subir.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Zancadas estáticas (alternas)</span><span class="tag tag-fuerza">Fuerza</span></td>
+            <td><span class="muscle-tag">Cuádriceps</span><span class="muscle-tag">Glúteos</span><span class="muscle-tag">Isquiotibiales</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">10 c/u</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Rodilla trasera a 2 cm del suelo. Tronco erguido. Si duelen rodillas, rango reducido.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Plancha frontal</span><span class="tag tag-core">Core</span></td>
+            <td><span class="muscle-tag">Core</span><span class="muscle-tag">Lumbar</span><span class="muscle-tag">Hombros</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">20–30 seg</td>
+            <td class="ex-rest">60 seg</td>
+            <td class="ex-note">Línea recta talón–cabeza. Ombligo a columna. Sin hundir caderas. Respiración constante.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Elevaciones de cadera (Glute Bridge)</span><span class="tag tag-fuerza">Fuerza</span></td>
+            <td><span class="muscle-tag">Glúteos</span><span class="muscle-tag">Isquiotibiales</span><span class="muscle-tag">Lumbar</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">15</td>
+            <td class="ex-rest">60 seg</td>
+            <td class="ex-note">Apretar glúteos arriba, aguantar 2 segundos. Fundamental para prevenir dolor lumbar.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="circuit-box">
+        <div class="circuit-title">
+          <span>Enfriamiento</span>
+          <span class="circuit-tag">5 min</span>
+        </div>
+        <div class="circuit-list">
+          <div class="circuit-item"><span class="ci-name">Estiramiento cuádriceps</span><span class="ci-count">30 seg c/u</span></div>
+          <div class="circuit-item"><span class="ci-name">Estiramiento pecho (puerta)</span><span class="ci-count">30 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">Estiramiento isquiotibial</span><span class="ci-count">30 seg c/u</span></div>
+          <div class="circuit-item"><span class="ci-name">Respiración diafragmática</span><span class="ci-count">2 min</span></div>
+        </div>
+      </div>
+
+      <!-- SESIÓN B -->
+      <div class="section-divider" id="beg-b"><span class="session-header">SESIÓN B — Cardio + Core <span class="session-days-tag">MIÉRCOLES</span></span></div>
+
+      <table class="ex-table">
+        <thead>
+          <tr>
+            <th>Ejercicio</th>
+            <th>Tipo</th>
+            <th>Series</th>
+            <th>Tiempo/Reps</th>
+            <th>Descanso</th>
+            <th>Notas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ex-name">Marcha rápida / Trote suave</span><span class="tag tag-cardio">Cardio</span></td>
+            <td><span class="muscle-tag">Cardiovascular</span></td>
+            <td class="ex-sets">1</td>
+            <td class="ex-reps">15–20 min</td>
+            <td class="ex-rest">—</td>
+            <td class="ex-note">FC máx 60–70%. Puedes hablar pero con esfuerzo. Si es trote, alternar 2 min trote / 1 min marcha.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Mountain Climbers lentos</span><span class="tag tag-core">Core</span></td>
+            <td><span class="muscle-tag">Core</span><span class="muscle-tag">Cardio</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">20 rep</td>
+            <td class="ex-rest">60 seg</td>
+            <td class="ex-note">Caderas al nivel. Movimiento controlado, no balanceo. Core activado siempre.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Abdominales bicicleta</span><span class="tag tag-core">Core</span></td>
+            <td><span class="muscle-tag">Oblicuos</span><span class="muscle-tag">Recto abdominal</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">20 rep</td>
+            <td class="ex-rest">60 seg</td>
+            <td class="ex-note">Codo opuesto a rodilla. Lento y controlado. No jalar del cuello.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Plancha lateral</span><span class="tag tag-core">Core</span></td>
+            <td><span class="muscle-tag">Oblicuos</span><span class="muscle-tag">Abductores</span></td>
+            <td class="ex-sets">2 c/u</td>
+            <td class="ex-reps">20 seg</td>
+            <td class="ex-rest">45 seg</td>
+            <td class="ex-note">Cadera sin caer. Modificar desde rodilla si es necesario.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Burpee modificado (sin salto)</span><span class="tag tag-cardio">Cardio</span></td>
+            <td><span class="muscle-tag">Full Body</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">8</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Bajar a plancha, hacer flexión (opcional), volver de pie. Ritmo cómodo.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Sábado -->
+      <div class="section-divider" id="beg-c"><span class="session-header">SESIÓN C — Cardio Suave <span class="session-days-tag">SÁBADO</span></span></div>
+      <div class="circuit-box">
+        <div class="circuit-title">
+          <span>Sesión de Recuperación Activa</span>
+          <span class="circuit-tag">30–45 min</span>
+        </div>
+        <div class="circuit-list">
+          <div class="circuit-item"><span class="ci-name">Caminata rápida exterior</span><span class="ci-count">20–30 min</span></div>
+          <div class="circuit-item"><span class="ci-name">Saltar cuerda suave</span><span class="ci-count">3 x 2 min</span></div>
+          <div class="circuit-item"><span class="ci-name">Movilidad articular completa</span><span class="ci-count">10 min</span></div>
+          <div class="circuit-item"><span class="ci-name">Yoga / Estiramiento</span><span class="ci-count">10 min</span></div>
+        </div>
+      </div>
+
+      <!-- Progresión -->
+      <div class="section-divider">Progresión semana a semana</div>
+
+      <div class="progress-container">
+        <div class="progress-label"><span>Semanas 1–3: Adaptación</span><span>Base técnica</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:25%;background:linear-gradient(90deg,#2e7d32,#4caf50)"></div></div>
+      </div>
+      <div class="progress-container">
+        <div class="progress-label"><span>Semanas 4–6: Consolidación</span><span>+2 reps/serie</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:50%;background:linear-gradient(90deg,#2e7d32,#4caf50)"></div></div>
+      </div>
+      <div class="progress-container">
+        <div class="progress-label"><span>Semanas 7–9: Volumen</span><span>+1 serie, variantes</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:75%;background:linear-gradient(90deg,#2e7d32,#4caf50)"></div></div>
+      </div>
+      <div class="progress-container">
+        <div class="progress-label"><span>Semanas 10–12: Test de nivel</span><span>APFT básico</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:100%;background:linear-gradient(90deg,#2e7d32,#4caf50)"></div></div>
+      </div>
+
+      <div class="tips-box">
+        <div class="tips-title">▶ Claves para principiante a los 40 años</div>
+        <ul class="tips-list">
+          <li>Prioriza el sueño 7–9 horas: la recuperación es MÁS LENTA que a los 20 años.</li>
+          <li>El dolor muscular (DOMS) los primeros días es normal; el dolor articular nunca lo es. Para.</li>
+          <li>Hidratación: mínimo 2.5 litros de agua al día, más en días de entrenamiento.</li>
+          <li>No saltes al nivel intermedio antes de las 8 semanas, aunque "te sientas bien".</li>
+          <li>Registra tus sesiones: fecha, ejercicios, reps. El progreso visible es motivación.</li>
+          <li>Test de 2 minutos de flexiones cada 4 semanas para medir avance.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CHECKLIST PRINCIPIANTE -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-icon">✅</span>
+        <div>
+          <div class="panel-title">Checklist Semanal</div>
+          <div class="panel-sub">Marca cada tarea completada</div>
+        </div>
+      </div>
+      <ul class="check-list" id="checklist-b">
+        <li><input type="checkbox"><span>3–4 sesiones de entrenamiento completadas</span></li>
+        <li><input type="checkbox"><span>2+ litros de agua al día todos los días</span></li>
+        <li><input type="checkbox"><span>Caminata activa en días de descanso (20+ min)</span></li>
+        <li><input type="checkbox"><span>Registro de alimentación (al menos un día)</span></li>
+        <li><input type="checkbox"><span>7–8 horas de sueño al menos 5 noches</span></li>
+        <li><input type="checkbox"><span>Sin alcohol/comida ultraprocesada durante la semana</span></li>
+        <li><input type="checkbox"><span>Peso registrado (misma hora, en ayunas)</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ========================= INTERMEDIO ========================= -->
+  <div class="tab-content" id="tab-intermediate">
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-icon">⚡</span>
+        <div>
+          <div class="panel-title">Fase 2 — Intermedio</div>
+          <div class="panel-sub">Semanas 13–28 · Fuerza, resistencia y composición corporal</div>
+        </div>
+        <span class="level-badge badge-intermediate">Nivel 2</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val">4–5</div><div class="stat-lbl">Días/semana</div></div>
+        <div class="stat-box"><div class="stat-val">45–60</div><div class="stat-lbl">Min/sesión</div></div>
+        <div class="stat-box"><div class="stat-val">16</div><div class="stat-lbl">Semanas</div></div>
+        <div class="stat-box"><div class="stat-val">3:1</div><div class="stat-lbl">Trabajo:Descanso</div></div>
+        <div class="stat-box"><div class="stat-val">~600</div><div class="stat-lbl">Kcal/sesión</div></div>
+      </div>
+
+      <div class="highlight-box">
+        <strong>Objetivo de la fase:</strong> Desarrollar fuerza funcional real, capacidad de dominadas completas, flexiones con variantes, y resistencia cardiovascular de 5km en menos de 30 minutos. Dividir el entrenamiento por grupos musculares. Pérdida de grasa: manteniendo músculo.
+      </div>
+
+      <div class="section-divider">¿Qué hago cada día? — Split Push / Pull / Legs</div>
+      <div class="day-plan" id="plan-int">
+
+        <div class="day-row train-row" data-day="1">
+          <div class="dr-day"><div class="dr-day-num">LUN</div><div class="dr-day-name">Lunes</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">DÍA PUSH — Pecho, Hombros, Tríceps <span class="dr-stype stype-fuerza">Empuje</span></div>
+            <div class="dr-exercises">
+              <b>Flexiones Diamante</b> (4×12–15) · <b>Flexiones Inclinadas</b> pies en silla (3×10–12) · <b>Pike Push-ups</b> (4×10) · <b>Dips en silla</b> (4×15) · <b>Flexiones Archer</b> (3×8 c/u) · <b>Superman lumbar</b> (3×15)
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">50 min</div><a class="dr-link" href="#int-push">Ver sesión ↓</a></div>
+        </div>
+
+        <div class="day-row train-row" data-day="2">
+          <div class="dr-day"><div class="dr-day-num">MAR</div><div class="dr-day-name">Martes</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">DÍA PULL — Espalda y Bíceps <span class="dr-stype stype-fuerza">Jalón</span></div>
+            <div class="dr-exercises">
+              <b>Dominadas asistidas con banda</b> (4×6–8) · <b>Dominadas negativas</b> 5 seg bajando (4×5) · <b>Remo invertido bajo barra</b> (4×12) · <b>Curl con toalla</b> (3×15) · <b>Face Pull con banda</b> (3×20)
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">50 min</div><a class="dr-link" href="#int-pull">Ver sesión ↓</a></div>
+        </div>
+
+        <div class="day-row hiit-row" data-day="3">
+          <div class="dr-day"><div class="dr-day-num">MIÉ</div><div class="dr-day-name">Miércoles</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">CARDIO HIIT — Circuito intervalos <span class="dr-stype stype-hiit">HIIT</span></div>
+            <div class="dr-exercises">
+              Protocolo <b>40 seg trabajo / 20 seg descanso × 4 rondas</b>: Burpees · Mountain Climbers · Jump Squats · Flexiones explosivas · Jumping Jacks · High Knees
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">25 min</div><a class="dr-link" href="#int-hiit">Ver sesión ↓</a></div>
+        </div>
+
+        <div class="day-row train-row" data-day="4">
+          <div class="dr-day"><div class="dr-day-num">JUE</div><div class="dr-day-name">Jueves</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">DÍA LEGS + CORE — Piernas y Abdomen <span class="dr-stype stype-fuerza">Piernas</span></div>
+            <div class="dr-exercises">
+              <b>Sentadilla búlgara</b> (4×10 c/u) · <b>Pistol squat asistida</b> (3×5 c/u) · <b>Jump Squats</b> (4×15) · <b>L-Sit entre sillas</b> (4×10–15 seg) · <b>Dragon Flag negativa</b> (3×5) · <b>Hollow Body Hold</b> (3×30 seg)
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">55 min</div><a class="dr-link" href="#int-legs">Ver sesión ↓</a></div>
+        </div>
+
+        <div class="day-row train-row" data-day="5">
+          <div class="dr-day"><div class="dr-day-num">VIE</div><div class="dr-day-name">Viernes</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">FULL BODY — Cuerpo completo acumulado <span class="dr-stype stype-fuerza">Full Body</span></div>
+            <div class="dr-exercises">
+              Repite los mejores ejercicios de la semana con menor volumen: <b>Dominadas</b> (3×max) · <b>Flexiones variante</b> (3×12) · <b>Jump Squats</b> (3×15) · <b>Plancha</b> (3×45 seg) · Circuito final de 10 min
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">50 min</div><span class="dr-link no-link">Sin link</span></div>
+        </div>
+
+        <div class="day-row cardio-row" data-day="6">
+          <div class="dr-day"><div class="dr-day-num">SÁB</div><div class="dr-day-name">Sábado</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">CARRERA CONTINUA — Rodaje 5 km <span class="dr-stype stype-cardio">Cardio</span></div>
+            <div class="dr-exercises">
+              Rodaje continuo 5 km a ritmo cómodo · Objetivo semana 28: bajar de 30 minutos · Si no puedes correr 5 km seguidos: alterna 4 min trote / 1 min marcha
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">30–40 min</div><span class="dr-link no-link">Cardio</span></div>
+        </div>
+
+        <div class="day-row rest-row" data-day="0">
+          <div class="dr-day"><div class="dr-day-num">DOM</div><div class="dr-day-name">Domingo</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">DESCANSO TOTAL <span class="dr-stype stype-descanso">Libre</span></div>
+            <div class="dr-exercises">
+              Sin entrenamiento · Sueño 8h · Prepara comida de la semana (meal prep) · Hidratación 2.5 L · Revisar avances y ajustar próxima semana
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">—</div><span class="dr-link no-link">Descanso</span></div>
+        </div>
+
+      </div>
+
+      <!-- DÍA PUSH -->
+      <div class="section-divider" id="int-push"><span class="session-header">DÍA 1 — PUSH (Pecho, Hombros, Tríceps) <span class="session-days-tag">LUNES</span></span></div>
+
+      <table class="ex-table">
+        <thead>
+          <tr>
+            <th>Ejercicio</th>
+            <th>Músculo</th>
+            <th>Series</th>
+            <th>Reps</th>
+            <th>Descanso</th>
+            <th>Progresión</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ex-name">Flexiones Diamante</span></td>
+            <td><span class="muscle-tag">Tríceps</span><span class="muscle-tag">Pecho interno</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">12–15</td>
+            <td class="ex-rest">75 seg</td>
+            <td class="ex-note">Manos formando rombo bajo el pecho. Progresa a flexiones declinadas.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Flexiones Inclinadas (pies en silla)</span></td>
+            <td><span class="muscle-tag">Pecho alto</span><span class="muscle-tag">Hombro ant.</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">10–12</td>
+            <td class="ex-rest">75 seg</td>
+            <td class="ex-note">Cuanto más alto los pies, más trabajo de hombro. Excelente para pecho superior.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Pike Push-ups (pino iniciación)</span></td>
+            <td><span class="muscle-tag">Hombros</span><span class="muscle-tag">Tríceps</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">10</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Posición en V invertida. Cabeza hacia el suelo. Precursor del pino completo.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Dips en silla/banco</span></td>
+            <td><span class="muscle-tag">Tríceps</span><span class="muscle-tag">Pecho inf.</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">15</td>
+            <td class="ex-rest">75 seg</td>
+            <td class="ex-note">Codos atrás, no hacia los lados. Bajar hasta 90°. Progresar a dips paralelas.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Flexiones Archer (alternas)</span></td>
+            <td><span class="muscle-tag">Pecho</span><span class="muscle-tag">Core</span><span class="muscle-tag">Estabilizadores</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">8 c/u</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Un brazo extendido mientras bajas hacia el otro. Precursor de one-arm push-up.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Superman (lumbar)</span></td>
+            <td><span class="muscle-tag">Lumbar</span><span class="muscle-tag">Glúteos</span><span class="muscle-tag">Hombros</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">15</td>
+            <td class="ex-rest">60 seg</td>
+            <td class="ex-note">Boca abajo. Elevar brazos y piernas simultáneamente. Aguantar 2 seg arriba.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- DÍA PULL -->
+      <div class="section-divider" id="int-pull"><span class="session-header">DÍA 2 — PULL (Espalda, Bíceps) <span class="session-days-tag">MARTES</span></span></div>
+
+      <table class="ex-table">
+        <thead>
+          <tr>
+            <th>Ejercicio</th>
+            <th>Músculo</th>
+            <th>Series</th>
+            <th>Reps</th>
+            <th>Descanso</th>
+            <th>Progresión</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ex-name">Dominadas asistidas (banda)</span></td>
+            <td><span class="muscle-tag">Dorsal</span><span class="muscle-tag">Bíceps</span><span class="muscle-tag">Romboides</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">6–8</td>
+            <td class="ex-rest">120 seg</td>
+            <td class="ex-note">Si no puedes dominadas completas, usar banda de resistencia. Objetivo: 8 dominadas sin banda.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Dominadas Negativas</span></td>
+            <td><span class="muscle-tag">Dorsal</span><span class="muscle-tag">Bíceps</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">5</td>
+            <td class="ex-rest">120 seg</td>
+            <td class="ex-note">Subir con ayuda, bajar en 5 segundos. Excelente para ganar fuerza en pull-ups.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Remo Invertido (bajo barra)</span></td>
+            <td><span class="muscle-tag">Espalda media</span><span class="muscle-tag">Bíceps</span><span class="muscle-tag">Antebrazos</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">12</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Cuerpo más horizontal = más difícil. Pecho al toque de barra. Escápulas juntas arriba.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Curl de bíceps con toalla/cinturón</span></td>
+            <td><span class="muscle-tag">Bíceps</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">15</td>
+            <td class="ex-rest">60 seg</td>
+            <td class="ex-note">Fijar toalla en pared, inclinarse atrás y hacer curl. Excelente resistencia sin peso.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Face Pull con banda</span></td>
+            <td><span class="muscle-tag">Deltoides post.</span><span class="muscle-tag">Manguito rotador</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">20</td>
+            <td class="ex-rest">60 seg</td>
+            <td class="ex-note">Fundamental para salud de hombros a los 40. Codos altos al tirar hacia la cara.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- DÍA PIERNAS -->
+      <div class="section-divider" id="int-legs"><span class="session-header">DÍA 4 — LEGS + CORE (Piernas y Abdomen) <span class="session-days-tag">JUEVES</span></span></div>
+
+      <table class="ex-table">
+        <thead>
+          <tr>
+            <th>Ejercicio</th>
+            <th>Músculo</th>
+            <th>Series</th>
+            <th>Reps</th>
+            <th>Descanso</th>
+            <th>Notas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ex-name">Sentadilla Búlgara</span></td>
+            <td><span class="muscle-tag">Cuádriceps</span><span class="muscle-tag">Glúteos</span><span class="muscle-tag">Estabilizadores</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">10 c/u</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Pie trasero elevado en silla. Rodilla delantera no pasa el pie. Alta demanda unilateral.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Sentadilla Pistol (asistida)</span></td>
+            <td><span class="muscle-tag">Cuádriceps</span><span class="muscle-tag">Glúteos</span><span class="muscle-tag">Tobillo</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">5 c/u</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Agarrarse a algo para asistencia. Una pierna extendida al frente. Máxima funcionalidad.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Jump Squats</span><span class="tag tag-cardio">Cardio</span></td>
+            <td><span class="muscle-tag">Cuádriceps</span><span class="muscle-tag">Glúteos</span><span class="muscle-tag">Pantorrillas</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">15</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Máxima explosión arriba, aterrizaje suave. Aumenta quema calórica y potencia.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">L-Sit (entre dos sillas)</span><span class="tag tag-core">Core</span></td>
+            <td><span class="muscle-tag">Core</span><span class="muscle-tag">Flexores cadera</span><span class="muscle-tag">Tríceps</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">10–15 seg</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Sentado entre sillas, elevar cuerpo y piernas. Uno de los mejores ejercicios de core.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Dragon Flag (negativa)</span><span class="tag tag-core">Core</span></td>
+            <td><span class="muscle-tag">Recto abdominal</span><span class="muscle-tag">Lumbar</span><span class="muscle-tag">Core completo</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">5</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Sujetarse a banco, cuerpo recto, bajar en 5 seg. El ejercicio de Bruce Lee. Solo negativa al inicio.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Hollow Body Hold</span><span class="tag tag-core">Core</span></td>
+            <td><span class="muscle-tag">Core completo</span><span class="muscle-tag">Flexores cadera</span></td>
+            <td class="ex-sets">3</td>
+            <td class="ex-reps">30 seg</td>
+            <td class="ex-rest">60 seg</td>
+            <td class="ex-note">Boca arriba, zona lumbar pegada al suelo, piernas y hombros levantados ligeramente. Base de gimnasia.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- HIIT MIÉRCOLES -->
+      <div class="section-divider" id="int-hiit"><span class="session-header">DÍA 3 — HIIT Cardiovascular <span class="session-days-tag">MIÉRCOLES</span></span></div>
+      <div class="circuit-box">
+        <div class="circuit-title">
+          <span>Circuito HIIT Militar</span>
+          <span class="circuit-tag">20 min + 5 calentamiento</span>
+        </div>
+        <div style="margin-bottom:10px;font-size:0.8em;color:var(--army-khaki);">
+          Protocolo: 40 segundos de trabajo / 20 segundos de descanso × 4 rondas
+        </div>
+        <div class="circuit-list">
+          <div class="circuit-item"><span class="ci-name">Burpees completos</span><span class="ci-count">40 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">Mountain Climbers rápidos</span><span class="ci-count">40 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">Jump Squats</span><span class="ci-count">40 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">Flexiones explosivas</span><span class="ci-count">40 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">Jumping Jacks</span><span class="ci-count">40 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">High Knees</span><span class="ci-count">40 seg</span></div>
+        </div>
+      </div>
+
+      <div class="tips-box">
+        <div class="tips-title">▶ Claves para nivel intermedio a los 40 años</div>
+        <ul class="tips-list">
+          <li>A los 40, el colágeno se produce 25% menos — suplementar con colágeno hidrolizado (10g/día) y vitamina C.</li>
+          <li>Incluye 10 min de movilidad de cadera y hombros ANTES de cada sesión.</li>
+          <li>No entrenes 2 días seguidos el mismo grupo muscular. La recuperación tarda 48–72h.</li>
+          <li>Si tienes 5+ dominadas seguidas, ya puedes comenzar semana 20 del programa avanzado.</li>
+          <li>Escucha al cuerpo: si el dolor es articular (agudo, localizado en articulación), PARA y descansa.</li>
+          <li>La testosterona baja a los 40. Priorizá sueño, grasas saludables y zinc para optimizarla naturalmente.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================= AVANZADO ========================= -->
+  <div class="tab-content" id="tab-advanced">
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-icon">🔥</span>
+        <div>
+          <div class="panel-title">Fase 3 — Avanzado</div>
+          <div class="panel-sub">Semanas 29+ · Élite militar y habilidades gimnásticas</div>
+        </div>
+        <span class="level-badge badge-advanced">Nivel 3</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val">5–6</div><div class="stat-lbl">Días/semana</div></div>
+        <div class="stat-box"><div class="stat-val">60–90</div><div class="stat-lbl">Min/sesión</div></div>
+        <div class="stat-box"><div class="stat-val">∞</div><div class="stat-lbl">Duración</div></div>
+        <div class="stat-box"><div class="stat-val">4:1</div><div class="stat-lbl">Trabajo:Descanso</div></div>
+        <div class="stat-box"><div class="stat-val">~800</div><div class="stat-lbl">Kcal/sesión</div></div>
+      </div>
+
+      <div class="highlight-box">
+        <strong>Objetivo de la fase:</strong> Estándares militares de élite: 50+ flexiones, 15+ dominadas, 2 min planchas, 5km en &lt;22 min. Habilidades gimnásticas: muscle-up, front lever progresivo, handstand, pistol squat. Composición corporal: &lt;18% grasa corporal.
+      </div>
+
+      <div class="section-divider">Estándares objetivos (APFT / Ejército)</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val">50+</div><div class="stat-lbl">Flexiones 2 min</div></div>
+        <div class="stat-box"><div class="stat-val">60+</div><div class="stat-lbl">Abdominales 2 min</div></div>
+        <div class="stat-box"><div class="stat-val">15+</div><div class="stat-lbl">Dominadas</div></div>
+        <div class="stat-box"><div class="stat-val">22:00</div><div class="stat-lbl">5km carrera</div></div>
+        <div class="stat-box"><div class="stat-val">2 min</div><div class="stat-lbl">Plancha frontal</div></div>
+        <div class="stat-box"><div class="stat-val">&lt;18%</div><div class="stat-lbl">Grasa corporal</div></div>
+      </div>
+
+      <div class="section-divider">Habilidades de objetivo</div>
+      <div class="circuit-box">
+        <div class="circuit-title">
+          <span>Skills de Calistenia Avanzada</span>
+          <span class="circuit-tag">Skills Gym</span>
+        </div>
+        <div class="circuit-list">
+          <div class="circuit-item"><span class="ci-name">Muscle-Up</span><span class="ci-count">Objetivo: 5 reps</span></div>
+          <div class="circuit-item"><span class="ci-name">Front Lever (progresivo)</span><span class="ci-count">Objetivo: 5 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">Handstand (pino)</span><span class="ci-count">Objetivo: 10 seg libre</span></div>
+          <div class="circuit-item"><span class="ci-name">Pistol Squat</span><span class="ci-count">Objetivo: 10 c/u</span></div>
+          <div class="circuit-item"><span class="ci-name">One-Arm Push-up</span><span class="ci-count">Objetivo: 5 c/u</span></div>
+          <div class="circuit-item"><span class="ci-name">Dragon Flag completo</span><span class="ci-count">Objetivo: 10 reps</span></div>
+          <div class="circuit-item"><span class="ci-name">Dips paralelas</span><span class="ci-count">Objetivo: 20+ reps</span></div>
+          <div class="circuit-item"><span class="ci-name">L-Sit libre (30 seg)</span><span class="ci-count">Objetivo: 30 seg</span></div>
+        </div>
+      </div>
+
+      <div class="section-divider">¿Qué hago cada día? — Programa Élite 6 días</div>
+      <div class="day-plan" id="plan-adv">
+
+        <div class="day-row train-row" data-day="1">
+          <div class="dr-day"><div class="dr-day-num">LUN</div><div class="dr-day-name">Lunes</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">FUERZA TREN SUPERIOR — Skills + Volumen <span class="dr-stype stype-fuerza">Élite</span></div>
+            <div class="dr-exercises">
+              <b>Dominadas</b> 3 agarres (5×10–15) · <b>Muscle-Up</b> (5×3–5) · <b>Dips lastrados</b> (4×12) · <b>Flexiones Archer</b> (4×8 c/u) · <b>Handstand contra pared</b> (5×20–30 seg) · <b>Front Lever Tuck→Straddle</b> (5×5 seg)
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">70 min</div><a class="dr-link" href="#adv-lun">Ver sesión ↓</a></div>
+        </div>
+
+        <div class="day-row hiit-row" data-day="2">
+          <div class="dr-day"><div class="dr-day-num">MAR</div><div class="dr-day-name">Martes</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">HIIT + PIERNAS EXPLOSIVAS — Tabata extendido <span class="dr-stype stype-hiit">HIIT</span></div>
+            <div class="dr-exercises">
+              <b>45 seg / 15 seg × 5 rondas</b>: Burpees pull-up · Pistol Squats · Mountain Climbers · Box Jumps · Flexiones explosivas · V-Ups · Salto a caja · High Knees sprint
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">60 min</div><a class="dr-link" href="#adv-mar">Ver sesión ↓</a></div>
+        </div>
+
+        <div class="day-row train-row" data-day="3">
+          <div class="dr-day"><div class="dr-day-num">MIÉ</div><div class="dr-day-name">Miércoles</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">SKILLS GIMNÁSTICAS — Habilidades avanzadas <span class="dr-stype stype-fuerza">Skills</span></div>
+            <div class="dr-exercises">
+              <b>Handstand kick-up</b> (10 intentos) · <b>Muscle-Up transition</b> (6×3) · <b>L-Sit libre</b> (5×15–30 seg) · <b>Dragon Flag completo</b> (4×8) — foco en técnica, no en cantidad
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">60 min</div><a class="dr-link" href="#adv-mie">Ver sesión ↓</a></div>
+        </div>
+
+        <div class="day-row cardio-row" data-day="4">
+          <div class="dr-day"><div class="dr-day-num">JUE</div><div class="dr-day-name">Jueves</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">CARRERA CONTINUA — Rodaje aeróbico base <span class="dr-stype stype-cardio">Resistencia</span></div>
+            <div class="dr-exercises">
+              Rodaje continuo <b>8–10 km</b> a ritmo moderado · FC 65–75% máximo · Sin pulsómetro: debes poder hablar con esfuerzo · Objetivo final: 10 km en menos de 55 minutos
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">50–65 min</div><span class="dr-link no-link">Cardio</span></div>
+        </div>
+
+        <div class="day-row train-row" data-day="5">
+          <div class="dr-day"><div class="dr-day-num">VIE</div><div class="dr-day-name">Viernes</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">VOLUMEN COMPLETO + TEST APFT <span class="dr-stype stype-fuerza">Test</span></div>
+            <div class="dr-exercises">
+              <b>Flexiones máximas</b> 2 min (objetivo: 50+) · <b>Abdominales</b> 2 min (objetivo: 60+) · <b>Dominadas máximas</b> (objetivo: 15+) · <b>Carrera 2.4 km</b> · <b>Plancha máxima</b> · <b>Burpees</b> 60 seg
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">80 min</div><a class="dr-link" href="#adv-vie">Ver sesión ↓</a></div>
+        </div>
+
+        <div class="day-row cardio-row" data-day="6">
+          <div class="dr-day"><div class="dr-day-num">SÁB</div><div class="dr-day-name">Sábado</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">RESISTENCIA DE CAMPO — Simulación militar <span class="dr-stype stype-cardio">Campo</span></div>
+            <div class="dr-exercises">
+              <b>Marcha cargada 8 km</b> (mochila 5–10 kg) · Circuito de obstáculos · Trepa de cuerda · Arrastre de peso · Sprints 10×50 m — el entrenamiento más duro de la semana
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">60 min</div><span class="dr-link no-link">Campo</span></div>
+        </div>
+
+        <div class="day-row rest-row" data-day="0">
+          <div class="dr-day"><div class="dr-day-num">DOM</div><div class="dr-day-name">Domingo</div><div class="today-badge">HOY</div></div>
+          <div class="dr-body">
+            <div class="dr-session-name">DESCANSO TOTAL — Recuperación máxima <span class="dr-stype stype-descanso">Libre</span></div>
+            <div class="dr-exercises">
+              Sin entrenamiento · Baño frío 10 min (opcional) · Sueño 8h mínimo · Foam roller y masaje · Hidratación 3 L · Revisa los objetivos de la semana siguiente
+            </div>
+          </div>
+          <div class="dr-meta"><div class="dr-duration">—</div><span class="dr-link no-link">Descanso</span></div>
+        </div>
+
+      </div>
+
+      <!-- LUNES: UPPER STRENGTH -->
+      <div class="section-divider" id="adv-lun"><span class="session-header">LUNES — Fuerza Tren Superior (Skills + Volumen) <span class="session-days-tag">LUNES</span></span></div>
+      <table class="ex-table">
+        <thead>
+          <tr>
+            <th>Ejercicio</th>
+            <th>Músculo</th>
+            <th>Series</th>
+            <th>Reps</th>
+            <th>Descanso</th>
+            <th>Progresión</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ex-name">Dominadas (agarre supino/prono)</span></td>
+            <td><span class="muscle-tag">Dorsal</span><span class="muscle-tag">Bíceps</span></td>
+            <td class="ex-sets">5</td>
+            <td class="ex-reps">10–15</td>
+            <td class="ex-rest">2 min</td>
+            <td class="ex-note">Variantes: agarre neutro, pronado, supino. Pausa 1 seg en la cima.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Muscle-Up (asistido/completo)</span></td>
+            <td><span class="muscle-tag">Dorsal</span><span class="muscle-tag">Tríceps</span><span class="muscle-tag">Core</span></td>
+            <td class="ex-sets">5</td>
+            <td class="ex-reps">3–5</td>
+            <td class="ex-rest">3 min</td>
+            <td class="ex-note">El rey del entrenamiento. Si no tienes, hacer 5 series de "transition drills" en barra.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Dips en paralelas lastradas</span></td>
+            <td><span class="muscle-tag">Pecho</span><span class="muscle-tag">Tríceps</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">12</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Usar mochila con peso si disponible. Bajar pecho a nivel de manos.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Flexiones tipo Archer (one-arm progresivo)</span></td>
+            <td><span class="muscle-tag">Pecho</span><span class="muscle-tag">Tríceps</span><span class="muscle-tag">Core</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">8 c/u</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Progresión directa al one-arm push-up. Brazo extendido lo más posible.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Pino contra pared (handstand)</span></td>
+            <td><span class="muscle-tag">Hombros</span><span class="muscle-tag">Core</span><span class="muscle-tag">Tríceps</span></td>
+            <td class="ex-sets">5</td>
+            <td class="ex-reps">20–30 seg</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Intentar despegar de pared progresivamente. Base para handstand libre.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Front Lever Tuck → Straddle</span></td>
+            <td><span class="muscle-tag">Core</span><span class="muscle-tag">Dorsal</span><span class="muscle-tag">Espalda completa</span></td>
+            <td class="ex-sets">5</td>
+            <td class="ex-reps">5 seg</td>
+            <td class="ex-rest">2 min</td>
+            <td class="ex-note">Tuck (piernas juntas al pecho) → Straddle (piernas abiertas) → completo. Progresión de meses.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- MARTES: HIIT + PIERNAS -->
+      <div class="section-divider" id="adv-mar"><span class="session-header">MARTES — HIIT + Piernas Explosivas <span class="session-days-tag">MARTES</span></span></div>
+
+      <div class="circuit-box">
+        <div class="circuit-title">
+          <span>Circuito Militar HIIT (Tabata extendido)</span>
+          <span class="circuit-tag">30 min</span>
+        </div>
+        <div style="margin-bottom:10px;font-size:0.8em;color:var(--army-khaki);">
+          Protocolo: 45 seg trabajo / 15 seg descanso × 5 rondas completas. Descanso 2 min entre rondas.
+        </div>
+        <div class="circuit-list">
+          <div class="circuit-item"><span class="ci-name">Burpees pull-up (si hay barra)</span><span class="ci-count">45 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">Pistol Squats alternos</span><span class="ci-count">45 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">Mountain Climbers explosivos</span><span class="ci-count">45 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">Box Jumps / Jump Squats</span><span class="ci-count">45 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">Flexiones explosivas (batidas)</span><span class="ci-count">45 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">V-Ups abdominal</span><span class="ci-count">45 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">Salto a caja + bajada excéntrica</span><span class="ci-count">45 seg</span></div>
+          <div class="circuit-item"><span class="ci-name">High Knees sprint</span><span class="ci-count">45 seg</span></div>
+        </div>
+      </div>
+
+      <!-- MIÉRCOLES: SKILLS -->
+      <div class="section-divider" id="adv-mie"><span class="session-header">MIÉRCOLES — Sesión de Skills Gimnásticas <span class="session-days-tag">MIÉRCOLES</span></span></div>
+      <table class="ex-table">
+        <thead>
+          <tr>
+            <th>Skill</th>
+            <th>Series</th>
+            <th>Duración/Reps</th>
+            <th>Descanso</th>
+            <th>Progresión actual</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ex-name">Handstand — Kick-up practice</span></td>
+            <td class="ex-sets">10</td>
+            <td class="ex-reps">1 intento</td>
+            <td class="ex-rest">30 seg</td>
+            <td class="ex-note">Contra pared hasta 20 seg → intentar libre. Foco en línea corporal recta.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Muscle-Up practice (transition)</span></td>
+            <td class="ex-sets">6</td>
+            <td class="ex-reps">3 reps</td>
+            <td class="ex-rest">3 min</td>
+            <td class="ex-note">Foco en la transición de jalón a empuje. Grip falso en barra facilita el giro de muñeca.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">L-Sit libre (entre sillas o paralelas)</span></td>
+            <td class="ex-sets">5</td>
+            <td class="ex-reps">15–30 seg</td>
+            <td class="ex-rest">90 seg</td>
+            <td class="ex-note">Progresión: un pie, tuck, straddle, completo. Core de hierro.</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Dragon Flag completo</span></td>
+            <td class="ex-sets">4</td>
+            <td class="ex-reps">8</td>
+            <td class="ex-rest">2 min</td>
+            <td class="ex-note">Cuerpo completamente recto. Bajar sin tocar suelo. El ejercicio definitivo de core.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- VIERNES: VOLUMEN -->
+      <div class="section-divider" id="adv-vie"><span class="session-header">VIERNES — Sesión Volumen Completo (Test APFT) <span class="session-days-tag">VIERNES</span></span></div>
+      <div class="circuit-box">
+        <div class="circuit-title">
+          <span>Test APFT Estilo — Máximo rendimiento</span>
+          <span class="circuit-tag">Evaluación mensual</span>
+        </div>
+        <div class="circuit-list">
+          <div class="circuit-item"><span class="ci-name">Flexiones máximas en 2 min</span><span class="ci-count">Objetivo: 50+</span></div>
+          <div class="circuit-item"><span class="ci-name">Abdominales en 2 min</span><span class="ci-count">Objetivo: 60+</span></div>
+          <div class="circuit-item"><span class="ci-name">Dominadas máximas</span><span class="ci-count">Objetivo: 15+</span></div>
+          <div class="circuit-item"><span class="ci-name">Carrera 2.4 km</span><span class="ci-count">Objetivo: &lt;11 min</span></div>
+          <div class="circuit-item"><span class="ci-name">Plancha máxima</span><span class="ci-count">Objetivo: 2+ min</span></div>
+          <div class="circuit-item"><span class="ci-name">Burpees en 60 seg</span><span class="ci-count">Objetivo: 20+</span></div>
+        </div>
+      </div>
+
+      <div class="tips-box">
+        <div class="tips-title">▶ Claves para el atleta avanzado a los 40 años</div>
+        <ul class="tips-list">
+          <li>La recuperación es tu mayor ventaja competitiva. 8h sueño + siesta de 20 min si es posible.</li>
+          <li>Incluye 1 semana de deload cada 4–6 semanas: volumen 50%, misma intensidad.</li>
+          <li>Baño frío post-entrenamiento (10 min a 15°C) reduce inflamación y mejora recuperación.</li>
+          <li>Suplementación mínima eficaz: creatina monohidrato (5g/día), omega-3 (3g/día), vitamina D3 (4000 UI).</li>
+          <li>Trabaja con terapeuta deportivo/fisio cada 6–8 semanas para prevención de lesiones.</li>
+          <li>En el nivel avanzado, los días de descanso son tan importantes como los días de entrenamiento.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================= NUTRICIÓN ========================= -->
+  <div class="tab-content" id="tab-nutrition">
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-icon">🥗</span>
+        <div>
+          <div class="panel-title">Plan Nutricional Personalizado</div>
+          <div class="panel-sub">Hombre · 40 años · 86 kg · 168 cm · IMC 30.5</div>
+        </div>
+      </div>
+
+      <div class="section-divider">Cálculo energético personalizado</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val">1,820</div><div class="stat-lbl">TMB (kcal)</div></div>
+        <div class="stat-box"><div class="stat-val">2,500</div><div class="stat-lbl">TDEE moderado</div></div>
+        <div class="stat-box"><div class="stat-val">2,000</div><div class="stat-lbl">Déficit (-500)</div></div>
+        <div class="stat-box"><div class="stat-val">0.5–1</div><div class="stat-lbl">kg grasa/semana</div></div>
+        <div class="stat-box"><div class="stat-val">180g</div><div class="stat-lbl">Proteína/día</div></div>
+        <div class="stat-box"><div class="stat-val">~73kg</div><div class="stat-lbl">Peso objetivo</div></div>
+      </div>
+
+      <div class="highlight-box">
+        <strong>Fórmula aplicada (Harris-Benedict):</strong> TMB = 88.36 + (13.4 × 86) + (4.8 × 168) − (5.7 × 40) = <strong>1,820 kcal</strong>.
+        Con actividad moderada × 1.375 = <strong>~2,500 kcal/día (TDEE)</strong>.
+        Para perder grasa sin perder músculo: <strong>déficit de 400–500 kcal</strong> → comer ~2,000–2,100 kcal/día.
+        Días de entrenamiento intenso: subir a 2,200 kcal.
+      </div>
+
+      <!-- MACROS -->
+      <div class="section-divider">Distribución de macronutrientes</div>
+      <div class="macro-grid">
+        <div class="macro-card">
+          <div class="macro-value">180<span class="macro-unit">g</span></div>
+          <div class="macro-name">Proteína</div>
+          <div class="macro-pct">36% · 720 kcal</div>
+        </div>
+        <div class="macro-card">
+          <div class="macro-value">200<span class="macro-unit">g</span></div>
+          <div class="macro-name">Carbohidratos</div>
+          <div class="macro-pct">40% · 800 kcal</div>
+        </div>
+        <div class="macro-card">
+          <div class="macro-value">55<span class="macro-unit">g</span></div>
+          <div class="macro-name">Grasas</div>
+          <div class="macro-pct">25% · 495 kcal</div>
+        </div>
+        <div class="macro-card">
+          <div class="macro-value">35<span class="macro-unit">g</span></div>
+          <div class="macro-name">Fibra</div>
+          <div class="macro-pct">Mínimo diario</div>
+        </div>
+        <div class="macro-card">
+          <div class="macro-value">2.8<span class="macro-unit">L</span></div>
+          <div class="macro-name">Agua</div>
+          <div class="macro-pct">+500ml por sesión</div>
+        </div>
+        <div class="macro-card">
+          <div class="macro-value">2,000<span class="macro-unit"> kcal</span></div>
+          <div class="macro-name">Total diario</div>
+          <div class="macro-pct">Días moderados</div>
+        </div>
+      </div>
+
+      <!-- PROGRESIÓN MACROS POR NIVEL -->
+      <div class="section-divider">Calorías según nivel de entrenamiento</div>
+      <table class="ex-table">
+        <thead>
+          <tr>
+            <th>Nivel</th>
+            <th>Kcal/día</th>
+            <th>Proteína</th>
+            <th>Carbs</th>
+            <th>Grasas</th>
+            <th>Objetivo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ex-name">Principiante</span><span class="tag tag-cardio" style="background:rgba(46,125,50,0.3);border-color:#2e7d32;color:#a5d6a7">Sem 1–12</span></td>
+            <td class="ex-sets">1,800–2,000</td>
+            <td class="ex-reps">160–170g</td>
+            <td class="ex-rest">180g</td>
+            <td class="ex-note">50g — déficit moderado, pérdida grasa prioritaria</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Intermedio</span><span class="tag tag-fuerza" style="background:rgba(230,81,0,0.3);border-color:#e65100;color:#ffcc80">Sem 13–28</span></td>
+            <td class="ex-sets">2,000–2,200</td>
+            <td class="ex-reps">175–185g</td>
+            <td class="ex-rest">200g</td>
+            <td class="ex-note">55g — recomposición corporal, ganancia muscular lenta</td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Avanzado</span><span class="tag tag-fuerza">Sem 29+</span></td>
+            <td class="ex-sets">2,200–2,500</td>
+            <td class="ex-reps">190–200g</td>
+            <td class="ex-rest">230g</td>
+            <td class="ex-note">65g — rendimiento, mantenimiento masa muscular</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- HORARIO DE ENTRENAMIENTO -->
+      <div class="section-divider">Cuándo entrenar con tu horario real</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+        <div class="tips-box" style="border-left-color:#1976d2">
+          <div class="tips-title" style="color:#90caf9">▶ Opción A — Hora del almuerzo (MEJOR)</div>
+          <ul class="tips-list">
+            <li><span>13:00–13:40 → Entrenas 35–40 min</span></li>
+            <li><span>13:40–14:00 → Comes rápido (traes tupper)</span></li>
+            <li><span>Funciona Lun / Mié / Vie en la oficina</span></li>
+            <li><span>No necesitas ducha larga — toallita + desodorante</span></li>
+          </ul>
+        </div>
+        <div class="tips-box" style="border-left-color:#00897b">
+          <div class="tips-title" style="color:#80cbc4">▶ Opción B — Noche en casa (alternativa)</div>
+          <ul class="tips-list">
+            <li><span>19:00–19:45 → Entrenas al llegar (antes de cenar)</span></li>
+            <li><span>Solo los días que no llegues muy cansado</span></li>
+            <li><span>Sesiones cortas: HIIT 20 min o circuito rápido</span></li>
+            <li><span>Sáb / Dom → sesiones largas sin prisa</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="highlight-box">
+        <strong>Regla práctica:</strong> Entrena a la hora del almuerzo Lun–Mié–Vie + sábado y domingo en casa. Martes y jueves son tus descansos activos (caminar al trabajo o en el regreso). Con tu horario, 4–5 días de entrenamiento real es totalmente alcanzable sin sacrificar a tu hija ni tu trabajo.
+      </div>
+
+      <!-- PLAN DE COMIDAS -->
+      <div class="section-divider">Plan de alimentación diario — Adaptado a tu horario</div>
+
+      <div style="background:rgba(139,26,26,0.15);border:1px solid rgba(139,26,26,0.4);border-left:4px solid #b71c1c;padding:10px 14px;margin-bottom:12px;border-radius:2px;font-size:0.8em;">
+        <strong style="color:var(--army-tan)">⚠ Ajustes aplicados a tu situación:</strong>
+        <span style="color:var(--army-khaki)"> Sin avena (causa inflamación) · Sin legumbres (difícil acceso) · Sin boniato (no disponible) · Comidas rápidas de preparar para mañanas con tu hija · Cena simple para cuando llegas cansado a las 18:30</span>
+      </div>
+
+      <div class="meal-plan">
+
+        <div class="meal-card">
+          <div class="meal-header" onclick="toggleMeal(this)">
+            <span class="meal-time">06:00</span>
+            <span class="meal-name">Desayuno rápido — mientras vistes a tu hija</span>
+            <span class="meal-kcal">~380 kcal</span>
+            <span style="color:var(--army-khaki)">▼</span>
+          </div>
+          <div class="meal-body">
+            <div style="font-size:0.75em;color:var(--army-khaki);margin-bottom:8px;font-style:italic;">
+              ⏱ Prep: 5 min — preparar los huevos la noche anterior
+            </div>
+            <div class="food-item">
+              <span class="food-name">Huevos duros (preparados noche anterior)</span>
+              <span class="food-amount">3 huevos</span>
+              <span class="food-macro">21g prot · 15g grasa · 0g carbs</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Pan integral tostado</span>
+              <span class="food-amount">2 rebanadas</span>
+              <span class="food-macro">6g prot · 28g carbs · 4g fibra</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Plátano o manzana (lo que tengas)</span>
+              <span class="food-amount">1 unidad</span>
+              <span class="food-macro">1g prot · 25g carbs · potasio</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Café negro sin azúcar</span>
+              <span class="food-amount">1 taza grande</span>
+              <span class="food-macro">0 kcal · cafeína → energía sin costo calórico</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="meal-card">
+          <div class="meal-header" onclick="toggleMeal(this)">
+            <span class="meal-time">10:00</span>
+            <span class="meal-name">Snack de oficina — media mañana</span>
+            <span class="meal-kcal">~210 kcal</span>
+            <span style="color:var(--army-khaki)">▼</span>
+          </div>
+          <div class="meal-body">
+            <div style="font-size:0.75em;color:var(--army-khaki);margin-bottom:8px;font-style:italic;">
+              ⏱ Llevar preparado de casa en bolsa pequeña
+            </div>
+            <div class="food-item">
+              <span class="food-name">Yogurt griego natural (0% grasa)</span>
+              <span class="food-amount">200g</span>
+              <span class="food-macro">20g prot · 8g carbs · 0g grasa</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Nueces o almendras (puño cerrado)</span>
+              <span class="food-amount">20g</span>
+              <span class="food-macro">4g prot · 12g grasa saludable · 2g carbs</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Fruta fresca (manzana, pera, mandarina)</span>
+              <span class="food-amount">1 pieza</span>
+              <span class="food-macro">0g prot · 18g carbs · 3g fibra</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="meal-card">
+          <div class="meal-header" onclick="toggleMeal(this)">
+            <span class="meal-time">13:00</span>
+            <span class="meal-name">Almuerzo principal — tupper de casa o comedor</span>
+            <span class="meal-kcal">~620 kcal</span>
+            <span style="color:var(--army-khaki)">▼</span>
+          </div>
+          <div class="meal-body">
+            <div style="font-size:0.75em;color:var(--army-khaki);margin-bottom:8px;font-style:italic;">
+              ⏱ Si entrenas a mediodía: come justo después · Preparar la noche anterior o el domingo (meal prep)
+            </div>
+            <div class="food-item">
+              <span class="food-name">Pechuga de pollo a la plancha o atún en lata</span>
+              <span class="food-amount">180g pollo / 2 latas atún</span>
+              <span class="food-macro">48–44g prot · 3–2g grasa</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Arroz integral o papa/patata cocida</span>
+              <span class="food-amount">150g cocido</span>
+              <span class="food-macro">4g prot · 35g carbs · 2g fibra</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Verduras salteadas o crudas (brócoli, zanahoria, pepino)</span>
+              <span class="food-amount">200g</span>
+              <span class="food-macro">4g prot · 12g carbs · 5g fibra</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Aceite de oliva o aguacate en rodajas</span>
+              <span class="food-amount">10ml / ¼ aguacate</span>
+              <span class="food-macro">0g prot · 9g grasa saludable</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Quinoa (si consigues) como extra de proteína</span>
+              <span class="food-amount">80g cocida</span>
+              <span class="food-macro">4g prot · 21g carbs · proteína completa</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="meal-card">
+          <div class="meal-header" onclick="toggleMeal(this)">
+            <span class="meal-time">16:30</span>
+            <span class="meal-name">Snack de tarde — antes de salir de la oficina</span>
+            <span class="meal-kcal">~190 kcal</span>
+            <span style="color:var(--army-khaki)">▼</span>
+          </div>
+          <div class="meal-body">
+            <div style="font-size:0.75em;color:var(--army-khaki);margin-bottom:8px;font-style:italic;">
+              ⏱ Cómelo en la oficina antes de salir — llegarás a casa con menos hambre y sin picar basura
+            </div>
+            <div class="food-item">
+              <span class="food-name">2 huevos duros (preparados por la mañana)</span>
+              <span class="food-amount">2 huevos</span>
+              <span class="food-macro">14g prot · 10g grasa · 0g carbs</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Requesón o cottage cheese (si consigues)</span>
+              <span class="food-amount">150g</span>
+              <span class="food-macro">16g prot · 4g grasa · 4g carbs</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Fruta: fresa, uvas, mandarina</span>
+              <span class="food-amount">100g</span>
+              <span class="food-macro">1g prot · 14g carbs · 3g fibra</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="meal-card">
+          <div class="meal-header" onclick="toggleMeal(this)">
+            <span class="meal-time">19:30</span>
+            <span class="meal-name">Cena — rápida, simple y proteica (llegas cansado)</span>
+            <span class="meal-kcal">~480 kcal</span>
+            <span style="color:var(--army-khaki)">▼</span>
+          </div>
+          <div class="meal-body">
+            <div style="font-size:0.75em;color:var(--army-khaki);margin-bottom:8px;font-style:italic;">
+              ⏱ Prep: 15 min máximo — elige una de las 3 opciones según energía
+            </div>
+            <div class="food-item">
+              <span class="food-name">OPCIÓN A — Huevos revueltos + aguacate + tomate</span>
+              <span class="food-amount">4 huevos + ½ aguacate</span>
+              <span class="food-macro">28g prot · 24g grasa · 6g carbs · 10 min</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">OPCIÓN B — Salmón a la sartén + ensalada grande</span>
+              <span class="food-amount">150g salmón</span>
+              <span class="food-macro">34g prot · 18g grasa · 8g carbs · 12 min</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">OPCIÓN C — Pollo a la plancha + arroz + verduras</span>
+              <span class="food-amount">150g pollo + 100g arroz</span>
+              <span class="food-macro">40g prot · 5g grasa · 30g carbs · 15 min</span>
+            </div>
+            <div class="food-item">
+              <span class="food-name">Ensalada verde (espinacas, pepino, tomate) — siempre</span>
+              <span class="food-amount">300g</span>
+              <span class="food-macro">3g prot · 8g carbs · 4g fibra · sin prep</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- HIDRATACIÓN -->
+      <div class="section-divider">Hidratación diaria</div>
+      <div class="panel" style="margin-bottom:10px">
+        <div style="font-size:0.82em;color:var(--army-khaki);margin-bottom:10px;">
+          Haz clic en cada vaso para registrar tu consumo de agua (objetivo: 10 vasos = 2.5 litros)
+        </div>
+        <div class="water-bar" id="water-tracker">
+        </div>
+        <div id="water-text" style="margin-top:8px;font-size:0.75em;color:var(--army-tan)">
+          0 / 10 vasos completados (0.0 L)
+        </div>
+      </div>
+
+      <!-- ALIMENTOS A EVITAR -->
+      <div class="section-divider">Alimentos — Permitidos vs. Evitar</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div class="tips-box" style="border-left-color:#2e7d32">
+          <div class="tips-title" style="color:#4caf50">▶ Alimentos base</div>
+          <ul class="tips-list">
+            <li><span>Pollo, pavo, atún en lata, salmón, sardinas, huevos</span></li>
+            <li><span>Arroz integral, papa/patata cocida, pan integral, quinoa</span></li>
+            <li><span>Brócoli, espinacas, zanahorias, pepino, tomate, lechuga</span></li>
+            <li><span>Frutos secos: nueces, almendras (un puño al día)</span></li>
+            <li><span>Aguacate, aceite de oliva, huevos (grasa saludable)</span></li>
+            <li><span>Requesón, yogurt griego, cottage, queso fresco bajo en grasa</span></li>
+            <li><span>Fruta fresca: manzana, pera, plátano, mandarina, fresa</span></li>
+            <li><span>Café negro, té verde, agua con limón (sin azúcar)</span></li>
+          </ul>
+        </div>
+        <div class="tips-box" style="border-left-color:#b71c1c">
+          <div class="tips-title" style="color:#ef5350">✘ Eliminar / Reducir drásticamente</div>
+          <ul class="tips-list">
+            <li><span>Avena — te causa inflamación (sustituida por pan integral)</span></li>
+            <li><span>Alcohol (vacío calórico + suprime testosterona)</span></li>
+            <li><span>Azúcar refinada, refrescos, jugos de caja/botella</span></li>
+            <li><span>Comida rápida: hamburguesas, pizza, frituras</span></li>
+            <li><span>Pan blanco, pasta blanca (elegir siempre integral)</span></li>
+            <li><span>Embutidos, carnes procesadas, salchichas</span></li>
+            <li><span>Ultraprocesados: chips, galletas, bollería industrial</span></li>
+            <li><span>Salsas industriales: mayonesa, kétchup con azúcar, BBQ</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SUPLEMENTOS -->
+      <div class="section-divider">Suplementación recomendada (basada en evidencia)</div>
+      <table class="ex-table">
+        <thead>
+          <tr>
+            <th>Suplemento</th>
+            <th>Dosis</th>
+            <th>Cuándo</th>
+            <th>Beneficio principal</th>
+            <th>Nivel</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ex-name">Creatina Monohidrato</span></td>
+            <td class="ex-sets">5g/día</td>
+            <td class="ex-reps">Post-entreno o cualquier hora</td>
+            <td class="ex-note">+8–10% fuerza, neuroprotección, reserva de fosfocreatina. El suplemento más estudiado del mundo.</td>
+            <td><span class="level-badge badge-beginner" style="font-size:0.6em">Todos</span></td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Vitamina D3 + K2</span></td>
+            <td class="ex-sets">4,000 UI D3 + 100mcg K2</td>
+            <td class="ex-reps">Con comida grasa</td>
+            <td class="ex-note">Testosterona, salud ósea, sistema inmune. 85% de españoles tienen déficit. Fundamental a los 40.</td>
+            <td><span class="level-badge badge-beginner" style="font-size:0.6em">Todos</span></td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Omega-3 (DHA + EPA)</span></td>
+            <td class="ex-sets">2–3g/día</td>
+            <td class="ex-reps">Con comidas</td>
+            <td class="ex-note">Antiinflamatorio, salud cardiovascular, recuperación muscular. Esencial para atletas &gt;35 años.</td>
+            <td><span class="level-badge badge-beginner" style="font-size:0.6em">Todos</span></td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Colágeno Hidrolizado + Vit C</span></td>
+            <td class="ex-sets">10g col + 500mg Vit C</td>
+            <td class="ex-reps">Pre-entreno (30 min antes)</td>
+            <td class="ex-note">Salud de tendones y articulaciones. Fundamental a los 40 donde el colágeno baja 25%.</td>
+            <td><span class="level-badge badge-intermediate" style="font-size:0.6em">Int+</span></td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Magnesio (glicinato o malato)</span></td>
+            <td class="ex-sets">300–400mg</td>
+            <td class="ex-reps">Por la noche</td>
+            <td class="ex-note">Calidad del sueño, síntesis proteica, función muscular. 68% de adultos tienen déficit.</td>
+            <td><span class="level-badge badge-intermediate" style="font-size:0.6em">Int+</span></td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Zinc</span></td>
+            <td class="ex-sets">15–25mg</td>
+            <td class="ex-reps">Noche, fuera de comidas</td>
+            <td class="ex-note">Producción testosterona, sistema inmune, recuperación. Atletas tienen mayor deficiencia por sudoración.</td>
+            <td><span class="level-badge badge-advanced" style="font-size:0.6em">Avanzado</span></td>
+          </tr>
+          <tr>
+            <td><span class="ex-name">Proteína de suero (Whey)</span></td>
+            <td class="ex-sets">25–30g</td>
+            <td class="ex-reps">Post-entreno</td>
+            <td class="ex-note">Solo si no alcanzas 180g de proteína con comida. Complemento, no base de la dieta.</td>
+            <td><span class="level-badge badge-intermediate" style="font-size:0.6em">Opcional</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="tips-box">
+        <div class="tips-title">▶ Estrategias nutricionales clave para 40 años</div>
+        <ul class="tips-list">
+          <li>Come proteína en CADA comida: mínimo 30–40g por ingesta para maximizar síntesis muscular (efecto "leucina threshold").</li>
+          <li>Ayuno intermitente 16:8 OPCIONAL: puede ayudar al déficit calórico, pero no es obligatorio. Si lo haces, protege la proteína.</li>
+          <li>Carbohidratos estratégicos: más carbs alrededor del entrenamiento, menos en la noche.</li>
+          <li>No te saltes el desayuno proteico: el cortisol matutino a los 40 es alto, la proteína lo regula.</li>
+          <li>Registra TODO 3 días a la semana con una app (MyFitnessPal/Cronometer). Ajusta según resultados reales.</li>
+          <li>Pesa el progreso semanalmente, misma hora y condiciones. La báscula miente a diario (fluctuación de agua).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================= TIMER ========================= -->
+  <div class="panel" style="margin-top:20px">
+    <div class="panel-header">
+      <span class="panel-icon">⏱</span>
+      <div>
+        <div class="panel-title">Temporizador de Entrenamiento</div>
+        <div class="panel-sub">Intervalos de trabajo y descanso</div>
+      </div>
+    </div>
+    <div class="timer-widget">
+      <div class="timer-display" id="timer-display">00:00</div>
+      <div class="timer-label" id="timer-label">LISTO</div>
+      <div class="timer-controls">
+        <button class="timer-preset" onclick="setTimer(30)">30 seg</button>
+        <button class="timer-preset" onclick="setTimer(45)">45 seg</button>
+        <button class="timer-preset" onclick="setTimer(60)">1 min</button>
+        <button class="timer-preset" onclick="setTimer(90)">1:30 min</button>
+        <button class="timer-preset" onclick="setTimer(120)">2 min</button>
+        <button class="timer-preset" onclick="setTimer(180)">3 min</button>
+        <button class="timer-preset" onclick="setTimer(300)">5 min</button>
+      </div>
+      <div class="timer-controls" style="margin-top:10px">
+        <button class="btn btn-start" id="btn-start" onclick="startTimer()">▶ Iniciar</button>
+        <button class="btn btn-pause" id="btn-pause" onclick="pauseTimer()">⏸ Pausar</button>
+        <button class="btn btn-reset" onclick="resetTimer()">↩ Reset</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tabs-wrapper -->
+
+<footer>
+  PROGRAMA DE CALISTENIA MILITAR — PERSONALIZADO · 40 AÑOS · 86KG · 168CM · 2026
+</footer>
+
+<!-- =================== MODAL DE EJERCICIO =================== -->
+<div id="ex-modal-overlay">
+  <div id="ex-modal">
+    <button class="exm-close" onclick="closeExModal()">✕</button>
+    <div class="exm-header">
+      <div id="exm-title" class="exm-title"></div>
+      <div class="exm-muscles-row">
+        <span class="exm-label">Músculos:</span>
+        <span id="exm-muscles" class="exm-muscles-val"></span>
+      </div>
+      <div class="exm-stats">
+        <div class="exm-stat"><span class="exm-label">Series</span><span id="exm-sets" class="exm-stat-val"></span></div>
+        <div class="exm-stat"><span class="exm-label">Reps / Tiempo</span><span id="exm-reps" class="exm-stat-val"></span></div>
+        <div class="exm-stat"><span class="exm-label">Descanso</span><span id="exm-rest" class="exm-stat-val"></span></div>
+      </div>
+    </div>
+    <div class="exm-body">
+      <div class="exm-video-wrap" id="exm-video-wrap" onclick="loadExVideo()" style="cursor:pointer">
+        <div class="exm-video-placeholder" id="exm-vid-placeholder">
+          <div class="play-icon">▶</div>
+          <div class="play-label">Abrir tutorial en YouTube</div>
+        </div>
+      </div>
+      <div class="exm-section">
+        <div class="exm-section-title">Cómo se hace</div>
+        <ol id="exm-steps" class="exm-steps"></ol>
+      </div>
+      <div class="exm-section">
+        <div class="exm-section-title">Consejo clave</div>
+        <div id="exm-tips" class="exm-tip-box"></div>
+      </div>
+      <div class="exm-section">
+        <div class="exm-section-title">Errores comunes</div>
+        <div id="exm-mistakes" class="exm-mistake-box"></div>
+      </div>
+      <a id="exm-yt" href="#" target="_blank" rel="noopener" class="exm-yt-btn">
+        ↗ Abrir búsqueda completa en YouTube
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+// =================== TABS ===================
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + target).classList.add('active');
+  });
+});
+
+// =================== MEAL TOGGLE ===================
+function toggleMeal(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('span:last-child');
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    arrow.textContent = '▼';
+  } else {
+    body.style.display = 'none';
+    arrow.textContent = '▶';
+  }
+}
+
+// =================== CHECKLIST ===================
+document.querySelectorAll('.check-list').forEach(list => {
+  list.querySelectorAll('li').forEach(li => {
+    const cb = li.querySelector('input[type="checkbox"]');
+    li.addEventListener('click', (e) => {
+      if (e.target !== cb) cb.checked = !cb.checked;
+      li.classList.toggle('checked', cb.checked);
+    });
+  });
+});
+
+// =================== WATER TRACKER ===================
+const waterTracker = document.getElementById('water-tracker');
+const waterText = document.getElementById('water-text');
+let waterCount = 0;
+const totalGlasses = 10;
+
+for (let i = 0; i < totalGlasses; i++) {
+  const unit = document.createElement('div');
+  unit.className = 'water-unit';
+  unit.innerHTML = '💧';
+  unit.title = `Vaso ${i+1}`;
+  unit.addEventListener('click', () => {
+    if (unit.classList.contains('filled')) {
+      unit.classList.remove('filled');
+      waterCount--;
+    } else {
+      unit.classList.add('filled');
+      waterCount++;
+    }
+    waterText.textContent = `${waterCount} / ${totalGlasses} vasos completados (${(waterCount * 0.25).toFixed(1)} L)`;
+  });
+  waterTracker.appendChild(unit);
+}
+
+// =================== TIMER ===================
+let timerInterval = null;
+let timerSeconds = 0;
+let timerRunning = false;
+
+function formatTime(s) {
+  const m = Math.floor(s / 60).toString().padStart(2, '0');
+  const sec = (s % 60).toString().padStart(2, '0');
+  return `${m}:${sec}`;
+}
+
+function setTimer(seconds) {
+  resetTimer();
+  timerSeconds = seconds;
+  document.getElementById('timer-display').textContent = formatTime(timerSeconds);
+  document.getElementById('timer-label').textContent = 'LISTO PARA INICIAR';
+}
+
+function startTimer() {
+  if (timerRunning || timerSeconds <= 0) return;
+  timerRunning = true;
+  document.getElementById('timer-label').textContent = 'EN EJECUCIÓN';
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    document.getElementById('timer-display').textContent = formatTime(timerSeconds);
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('timer-display').textContent = '00:00';
+      document.getElementById('timer-label').textContent = '¡TIEMPO!';
+      // Beep effect via AudioContext
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        for (let i = 0; i < 3; i++) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = 880;
+          gain.gain.value = 0.3;
+          osc.start(ctx.currentTime + i * 0.3);
+          osc.stop(ctx.currentTime + i * 0.3 + 0.15);
+        }
+      } catch(e) {}
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timer-label').textContent = 'PAUSADO';
+  } else if (timerSeconds > 0) {
+    startTimer();
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = 0;
+  document.getElementById('timer-display').textContent = '00:00';
+  document.getElementById('timer-label').textContent = 'LISTO';
+}
+
+// =================== RESALTAR DÍA ACTUAL ===================
+(function() {
+  const today = new Date().getDay(); // 0=Dom, 1=Lun, ..., 6=Sáb
+  document.querySelectorAll('.day-row').forEach(row => {
+    if (parseInt(row.dataset.day) === today) {
+      row.classList.add('today-row');
+    }
+  });
+})();
+
+// =================== PESTAÑA HOY ===================
+
+// ---- Datos del programa ----
+const HOY_DATA = {
+  beginner: {
+    color: '#2e7d32',
+    totalWeeks: 12,
+    // day 0=Dom,1=Lun,2=Mar,3=Mié,4=Jue,5=Vie,6=Sáb
+    schedule: {
+      0: 'rest',
+      1: 'A',
+      2: 'rest_active',
+      3: 'B',
+      4: 'rest_active',
+      5: 'A',
+      6: 'C'
+    },
+    sessions: {
+      A: {
+        name: 'SESIÓN A — Cuerpo Completo',
+        type: 'Fuerza',
+        duration: '35–40 min',
+        link: '#beg-a',
+        exercises: [
+          { name: 'Flexiones desde rodillas',  sets: '3', reps: '8–12 reps', rest: '60 seg descanso', note: 'Codos a 45°, cuerpo recto desde rodillas' },
+          { name: 'Sentadilla goblet',          sets: '3', reps: '15 reps',   rest: '60 seg descanso', note: 'Con botella de agua o mochila como peso' },
+          { name: 'Remo invertido',             sets: '3', reps: '8–10 reps', rest: '60 seg descanso', note: 'Mesa o barra baja — escápulas bien retraídas' },
+          { name: 'Zancadas alternas',          sets: '3', reps: '10 c/u',    rest: '60 seg descanso', note: 'Rodilla trasera casi toca el suelo' },
+          { name: 'Plancha frontal',            sets: '3', reps: '20–30 seg', rest: '45 seg descanso', note: 'Glúteos apretados, no dejes caer la cadera' },
+          { name: 'Glute Bridge',               sets: '3', reps: '15 reps',   rest: '45 seg descanso', note: 'Empuja los talones contra el suelo' }
+        ]
+      },
+      B: {
+        name: 'SESIÓN B — Cardio + Core',
+        type: 'Cardio',
+        duration: '35 min',
+        link: '#beg-b',
+        exercises: [
+          { name: 'Trote suave / marcha rápida', sets: '1', reps: '15–20 min', rest: '', note: 'Mantén conversación fluida — zona 2' },
+          { name: 'Mountain Climbers lentos',    sets: '3', reps: '20 reps',   rest: '45 seg descanso', note: 'Lento y controlado — activa el core' },
+          { name: 'Abdominales bicicleta',       sets: '3', reps: '20 reps',   rest: '45 seg descanso', note: 'Codo toca rodilla opuesta' },
+          { name: 'Plancha lateral',             sets: '2', reps: '20 seg c/u',rest: '30 seg descanso', note: 'Cada lado' },
+          { name: 'Burpee modificado sin salto', sets: '3', reps: '8 reps',    rest: '60 seg descanso', note: 'Sin salto — baja al suelo, sube y de pie' }
+        ]
+      },
+      C: {
+        name: 'SESIÓN C — Cardio Suave + Movilidad',
+        type: 'Cardio suave',
+        duration: '30–45 min',
+        link: '#beg-c',
+        exercises: [
+          { name: 'Caminata rápida exterior', sets: '1', reps: '20–30 min', rest: '', note: 'Al aire libre si es posible — vitamina D' },
+          { name: 'Saltar cuerda suave',      sets: '3', reps: '2 min',     rest: '60 seg descanso', note: 'Sin cuerda: simula el movimiento' },
+          { name: 'Movilidad articular',      sets: '1', reps: '10 min',    rest: '', note: 'Hombros, cadera, tobillos, muñecas' },
+          { name: 'Estiramientos / Yoga',     sets: '1', reps: '10 min',    rest: '', note: 'Psoas, cuádriceps, dorsal ancho' }
+        ]
+      },
+      rest: { name: 'DESCANSO TOTAL', type: 'rest', duration: '', exercises: [] },
+      rest_active: {
+        name: 'DESCANSO ACTIVO',
+        type: 'rest',
+        duration: '20–30 min',
+        exercises: [
+          { name: 'Caminata suave',        sets: '1', reps: '20–30 min', rest: '', note: 'Sin intensidad, solo movimiento' },
+          { name: 'Estiramientos suaves',  sets: '1', reps: '10 min',    rest: '', note: 'Cadera, hombros, cervicales' }
+        ]
+      }
+    }
+  },
+  intermediate: {
+    color: '#e65100',
+    totalWeeks: 16,
+    schedule: {
+      0: 'rest',
+      1: 'push',
+      2: 'pull',
+      3: 'legs',
+      4: 'rest_active',
+      5: 'push',
+      6: 'hiit'
+    },
+    sessions: {
+      push: {
+        name: 'PUSH — Empuje (Pecho/Hombro/Tríceps)',
+        type: 'Fuerza',
+        duration: '45–50 min',
+        link: '#int-push',
+        exercises: [
+          { name: 'Flexiones diamante',         sets: '4', reps: '8–12 reps', rest: '90 seg', note: 'Manos juntas bajo el pecho' },
+          { name: 'Flexiones arqueras',         sets: '3', reps: '6 c/u',     rest: '90 seg', note: 'Preparación one-arm push-up' },
+          { name: 'Pike push-up',               sets: '3', reps: '8–10 reps', rest: '90 seg', note: 'Hombros verticales' },
+          { name: 'Dips en silla',              sets: '3', reps: '10–15 reps',rest: '60 seg', note: 'Codos al cuerpo' },
+          { name: 'Plancha con toque hombro',   sets: '3', reps: '20 reps',   rest: '45 seg', note: '10 c/u, cadera estable' }
+        ]
+      },
+      pull: {
+        name: 'PULL — Jalón (Espalda/Bíceps)',
+        type: 'Fuerza',
+        duration: '45–50 min',
+        link: '#int-pull',
+        exercises: [
+          { name: 'Dominadas negativas',   sets: '4', reps: '5–6 reps', rest: '2 min', note: 'Baja en 5 seg — excentrico' },
+          { name: 'Remo australiano',      sets: '3', reps: '10–12 reps',rest: '90 seg', note: 'Cuerpo horizontal al suelo' },
+          { name: 'Dominadas asistidas',   sets: '3', reps: '6–8 reps', rest: '2 min', note: 'Con banda elástica si es necesario' },
+          { name: 'Superman',              sets: '3', reps: '12 reps',  rest: '45 seg', note: 'Espalda baja y glúteos' },
+          { name: 'Curl bíceps con mochila', sets: '3', reps: '10 reps', rest: '60 seg', note: 'Peso en mochila' }
+        ]
+      },
+      legs: {
+        name: 'LEGS — Piernas + Core',
+        type: 'Fuerza',
+        duration: '45 min',
+        link: '#int-legs',
+        exercises: [
+          { name: 'Sentadilla búlgara',     sets: '3', reps: '8 c/u',    rest: '90 seg', note: 'Pie trasero elevado' },
+          { name: 'Pistol squat asistido',  sets: '3', reps: '5 c/u',    rest: '90 seg', note: 'Con soporte de pared o TRX' },
+          { name: 'Zancadas con salto',     sets: '3', reps: '10 reps',  rest: '60 seg', note: 'Alterna piernas en el aire' },
+          { name: 'Nordic curl',            sets: '3', reps: '5 reps',   rest: '90 seg', note: 'Isquiotibiales — muy lento' },
+          { name: 'L-Sit progresivo',       sets: '3', reps: '10–15 seg',rest: '60 seg', note: 'En paralelas o suelo' },
+          { name: 'Dragon flag negativa',   sets: '3', reps: '3–5 reps', rest: '90 seg', note: 'Excentrico lento — 5 seg bajada' }
+        ]
+      },
+      hiit: {
+        name: 'HIIT — Alta Intensidad',
+        type: 'HIIT',
+        duration: '30 min',
+        link: '#int-hiit',
+        exercises: [
+          { name: 'Calentamiento',        sets: '1', reps: '5 min',    rest: '', note: 'Trote suave + movilidad' },
+          { name: 'Burpees completos',    sets: '4', reps: '40 seg',   rest: '20 seg descanso', note: 'Trabajo 40:20 — 8 rondas' },
+          { name: 'Saltos al cajón',      sets: '4', reps: '40 seg',   rest: '20 seg descanso', note: 'O saltos al lugar' },
+          { name: 'Sprint en el sitio',   sets: '4', reps: '40 seg',   rest: '20 seg descanso', note: 'Máxima velocidad' },
+          { name: 'Mountain climbers',    sets: '4', reps: '40 seg',   rest: '20 seg descanso', note: 'Máxima velocidad' },
+          { name: 'Vuelta a la calma',    sets: '1', reps: '5 min',    rest: '', note: 'Estiramientos' }
+        ]
+      },
+      rest: { name: 'DESCANSO TOTAL', type: 'rest', duration: '', exercises: [] },
+      rest_active: {
+        name: 'DESCANSO ACTIVO',
+        type: 'rest',
+        duration: '20–30 min',
+        exercises: [
+          { name: 'Foam roller / auto-masaje', sets: '1', reps: '10 min', rest: '', note: 'Cuádriceps, espalda, pantorrillas' },
+          { name: 'Movilidad articular',       sets: '1', reps: '15 min', rest: '', note: 'Cadera, columna torácica, hombros' }
+        ]
+      }
+    }
+  },
+  advanced: {
+    color: '#b71c1c',
+    totalWeeks: 999,
+    schedule: {
+      0: 'rest',
+      1: 'skill',
+      2: 'strength',
+      3: 'hiit',
+      4: 'skill',
+      5: 'strength',
+      6: 'conditioning'
+    },
+    sessions: {
+      skill: {
+        name: 'SKILL — Habilidades Calistenia',
+        type: 'Habilidad',
+        duration: '60–75 min',
+        link: '#adv-skill',
+        exercises: [
+          { name: 'Práctica Handstand',       sets: '5', reps: '30–60 seg', rest: '2 min', note: 'Contra pared o libre' },
+          { name: 'Front Lever progresivo',   sets: '4', reps: '5–8 seg',   rest: '3 min', note: 'Progresión: tuck → medio → completo' },
+          { name: 'Muscle-up negativo',        sets: '4', reps: '3–5 reps', rest: '3 min', note: 'Baja lento desde arriba de la barra' },
+          { name: 'Planche lean',              sets: '4', reps: '15 seg',   rest: '2 min', note: 'Hombros delante de las manos' },
+          { name: 'L-Sit completo',            sets: '3', reps: '15–20 seg',rest: '90 seg', note: 'Piernas rectas y paralelas al suelo' }
+        ]
+      },
+      strength: {
+        name: 'STRENGTH — Fuerza Máxima',
+        type: 'Fuerza',
+        duration: '60 min',
+        link: '#adv-strength',
+        exercises: [
+          { name: 'One-arm push-up asistido', sets: '4', reps: '4–6 c/u',  rest: '3 min', note: 'Con mano en pared o pies elevados' },
+          { name: 'Dominadas lastradas',       sets: '4', reps: '5–6 reps', rest: '3 min', note: 'Mochila con 5–10 kg' },
+          { name: 'Pistol squat completo',     sets: '4', reps: '5–8 c/u',  rest: '2 min', note: 'Completo sin apoyo' },
+          { name: 'Dragon flag',               sets: '3', reps: '5–8 reps', rest: '2 min', note: 'Completo sin eccéntrico' },
+          { name: 'Archer pull-up',            sets: '3', reps: '5 c/u',    rest: '2 min', note: 'Preparación one-arm pull-up' }
+        ]
+      },
+      hiit: {
+        name: 'HIIT MILITAR — Test APFT',
+        type: 'HIIT',
+        duration: '45 min',
+        link: '#adv-hiit',
+        exercises: [
+          { name: 'Test flexiones 2 min',  sets: '1', reps: 'Máx reps', rest: '5 min', note: 'Objetivo: 50 flexiones' },
+          { name: 'Test dominadas',        sets: '1', reps: 'Máx reps', rest: '5 min', note: 'Objetivo: 15 dominadas' },
+          { name: 'Carrera 5 km',          sets: '1', reps: '<22 min',   rest: '', note: 'Estándar APFT militar' }
+        ]
+      },
+      conditioning: {
+        name: 'CONDITIONING — Acondicionamiento',
+        type: 'Cardio',
+        duration: '45–60 min',
+        link: '#adv-cond',
+        exercises: [
+          { name: 'Caminata con mochila (rucking)', sets: '1', reps: '30–45 min', rest: '', note: '10–15 kg de peso — ritmo militar' },
+          { name: 'Estiramientos profundos',         sets: '1', reps: '15 min',    rest: '', note: 'PNF: isometrico + estiramiento' },
+          { name: 'Práctica libre de habilidades',   sets: '1', reps: '10–15 min', rest: '', note: 'Lo que más necesites trabajar' }
+        ]
+      },
+      rest: { name: 'DESCANSO TOTAL', type: 'rest', duration: '', exercises: [] }
+    }
+  }
+};
+
+// Rotación semanal: el día 0=Dom,1=Lun,...6=Sáb determina qué variante se muestra
+const _day = new Date().getDay();
+
+const MEALS = [
+  { time: '09:00', icon: '🌅', name: 'Desayuno', kcal: 440,
+    note: 'Primera comida del día — sin avena (inflamatoria). Rota el carbohidrato cada día para no aburrirte.',
+    items: [
+      // Carbohidrato rotativo — un objeto directo, sin spread
+      [
+        { n: 'Arroz blanco cocido',          a: '200 g cocido',  m: 'P:4g / C:44g / G:0g' },  // Lun
+        { n: 'Tortillas de maíz (nixtamal)', a: '3 piezas',      m: 'P:6g / C:42g / G:3g' },  // Mar
+        { n: 'Camote cocido',                a: '200 g',         m: 'P:3g / C:46g / G:0g' },  // Mié
+        { n: 'Arroz blanco cocido',          a: '200 g cocido',  m: 'P:4g / C:44g / G:0g' },  // Jue
+        { n: 'Tortillas de maíz (nixtamal)', a: '3 piezas',      m: 'P:6g / C:42g / G:3g' },  // Vie
+        { n: 'Pan integral tostado',         a: '2 rebanadas',   m: 'P:8g / C:30g / G:2g' },  // Sáb
+        { n: 'Camote cocido',                a: '200 g',         m: 'P:3g / C:46g / G:0g' },  // Dom
+      ][_day],
+      { n: 'Claras de huevo',  a: '4 claras',  m: 'P:14g / C:0g / G:0g' },
+      { n: 'Huevo entero',     a: '2 huevos',  m: 'P:12g / C:0g / G:10g' },
+      { n: 'Aguacate',         a: '1/4 pieza', m: 'P:1g  / C:3g  / G:7g'  },
+      { n: 'Plátano maduro',   a: '1 mediano', m: 'P:1g  / C:27g / G:0g'  },
+    ]
+  },
+  { time: '11:30', icon: '💪', name: 'Media mañana (post-entreno)', kcal: 300,
+    note: 'Si entrenaste esta mañana: tómalo máximo 30 min después. Si no, es un snack de mantenimiento.',
+    items: [
+      { n: 'Proteína whey',    a: '30 g',     m: 'P:24g / C:3g / G:1g'  },
+      { n: 'Banana',           a: '1 grande', m: 'P:1g  / C:31g / G:0g' },
+      { n: 'Leche descremada', a: '200 ml',   m: 'P:7g  / C:9g  / G:0g' },
+    ]
+  },
+  { time: '14:00', icon: '🍽️', name: 'Almuerzo', kcal: 550,
+    note: 'Comida más grande del día — proteína + carbohidrato complejo.',
+    items: [
+      // Proteína rotativa
+      [
+        { n: 'Pechuga de pollo a la plancha', a: '180 g cocido',  m: 'P:54g / C:0g / G:4g' },  // Lun
+        { n: 'Atún en agua escurrido',        a: '2 latas (160g)',m: 'P:48g / C:0g / G:2g' },  // Mar
+        { n: 'Bistec de res magra',           a: '180 g cocido',  m: 'P:46g / C:0g / G:8g' },  // Mié
+        { n: 'Pechuga de pavo',               a: '180 g cocido',  m: 'P:50g / C:0g / G:3g' },  // Jue
+        { n: 'Pechuga de pollo a la plancha', a: '180 g cocido',  m: 'P:54g / C:0g / G:4g' },  // Vie
+        { n: 'Atún en agua escurrido',        a: '2 latas (160g)',m: 'P:48g / C:0g / G:2g' },  // Sáb
+        { n: 'Bistec de res magra',           a: '180 g cocido',  m: 'P:46g / C:0g / G:8g' },  // Dom
+      ][_day],
+      { n: 'Arroz integral',   a: '100 g seco', m: 'P:8g  / C:77g / G:2g'  },
+      { n: 'Verduras al vapor', a: '200 g',     m: 'P:3g  / C:10g / G:0g'  },
+      { n: 'Aceite de oliva',  a: '1 cda',      m: 'P:0g  / C:0g  / G:14g' },
+    ]
+  },
+  { time: '17:00', icon: '🥗', name: 'Merienda', kcal: 250,
+    note: 'Pre-entreno si entrenas tarde, o merienda de mantenimiento.',
+    items: [
+      { n: 'Requesón / cottage', a: '150 g',         m: 'P:18g / C:4g / G:2g'  },
+      { n: 'Manzana o pera',     a: '1 pieza',       m: 'P:0g  / C:22g / G:0g' },
+      { n: 'Almendras',          a: '20 g (15 uds)', m: 'P:4g  / C:3g  / G:12g'},
+    ]
+  },
+  { time: '20:30', icon: '🌙', name: 'Cena', kcal: 400,
+    note: 'Alta en proteína, baja en carbos y sin pescado. Verdura de temporada sin almidón.',
+    items: [
+      // Proteína rotativa (sin pescado)
+      [
+        { n: 'Pechuga de pollo hervida',   a: '200 g',   m: 'P:46g / C:0g / G:4g'  }, // Lun
+        { n: 'Pavo molido salteado',       a: '200 g',   m: 'P:44g / C:0g / G:6g'  }, // Mar
+        { n: 'Bistec de res a la plancha', a: '180 g',   m: 'P:42g / C:0g / G:10g' }, // Mié
+        { n: 'Huevos a la mexicana',       a: '4 huevos',m: 'P:28g / C:4g / G:20g' }, // Jue
+        { n: 'Pechuga de pollo al horno',  a: '200 g',   m: 'P:46g / C:0g / G:4g'  }, // Vie
+        { n: 'Pavo molido salteado',       a: '200 g',   m: 'P:44g / C:0g / G:6g'  }, // Sáb
+        { n: 'Bistec de res a la plancha', a: '180 g',   m: 'P:42g / C:0g / G:10g' }, // Dom
+      ][_day],
+      // Verdura rotativa (sin almidón)
+      [
+        { n: 'Brócoli al vapor',         a: '200 g', m: 'P:5g / C:10g / G:0g' }, // Lun
+        { n: 'Ejotes salteados con ajo', a: '200 g', m: 'P:4g / C:10g / G:2g' }, // Mar
+        { n: 'Calabacita a la plancha',  a: '200 g', m: 'P:3g / C:8g  / G:0g' }, // Mié
+        { n: 'Espinacas salteadas',      a: '150 g', m: 'P:4g / C:4g  / G:1g' }, // Jue
+        { n: 'Chayote cocido',           a: '200 g', m: 'P:2g / C:9g  / G:0g' }, // Vie
+        { n: 'Brócoli al vapor',         a: '200 g', m: 'P:5g / C:10g / G:0g' }, // Sáb
+        { n: 'Ejotes salteados con ajo', a: '200 g', m: 'P:4g / C:10g / G:2g' }, // Dom
+      ][_day],
+      { n: 'Ensalada verde grande', a: 'libre',  m: 'P:2g / C:5g  / G:0g'  },
+      { n: 'Aceite de oliva',       a: '1 cda',  m: 'P:0g / C:0g  / G:14g' },
+    ]
+  }
+];
+
+const DAILY_CHECKS = [
+  'Beber ≥ 2.5 L de agua',
+  'Dormir 7–8 horas esta noche',
+  'Tomar creatina (5 g) + D3+K2',
+  'Comer proteína en cada comida',
+  'Evitar ultraprocesados hoy',
+  'Registrar el peso (misma hora, en ayunas)',
+  '5 minutos de respiración / meditación'
+];
+
+// ---- Helpers generales ----
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function debounce(fn, ms) {
+  let t;
+  return function(...args) { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), ms); };
+}
+
+// ---- Estado y localStorage ----
+// v2: payload versionado { v, ts, data }
+// v1 legacy (sin campo v): migrado automáticamente al leer
+const LS_KEY = 'calMilHoy_v2';
+const LS_VER = 2;
+
+function pruneOldDays(state) {
+  // Borra entradas de más de 90 días para no superar la cuota de 5 MB
+  const d = new Date();
+  d.setDate(d.getDate() - 90);
+  const cutoff = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  ['done','mealsDone','checksDone','exDone'].forEach(k => {
+    if (!state[k]) return;
+    Object.keys(state[k]).forEach(dk => { if (dk < cutoff) delete state[k][dk]; });
+  });
+}
+
+function _writeToDisk(s) {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({ v: LS_VER, ts: Date.now(), data: s }));
+  } catch(e) {
+    if (e.name === 'QuotaExceededError') {
+      pruneOldDays(s);
+      try { localStorage.setItem(LS_KEY, JSON.stringify({ v: LS_VER, ts: Date.now(), data: s })); }
+      catch(e2) { console.warn('[CalMil] Storage lleno — no se pudo guardar el progreso.'); }
+    }
+  }
+}
+
+// Debounce 400 ms: no escribe más de 1 vez por 400 ms aunque el usuario clique rápido
+const saveState = debounce(_writeToDisk, 400);
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) {
+      // Intenta migrar desde v1
+      const v1 = localStorage.getItem('calMilHoy_v1');
+      if (v1) { const d = JSON.parse(v1); localStorage.removeItem('calMilHoy_v1'); return d || {}; }
+      return {};
+    }
+    const parsed = JSON.parse(raw);
+    // Payload versionado
+    if (parsed && parsed.v && parsed.data) return parsed.data;
+    // Legacy sin versión
+    return parsed || {};
+  } catch(e) { return {}; }
+}
+
+let appState = loadState();
+// defaults
+if (!appState.level)      appState.level      = 'beginner';
+if (!appState.startDate)  appState.startDate   = todayStr(); // usa fecha local, no UTC
+if (!appState.done)       appState.done        = {};
+if (!appState.mealsDone)  appState.mealsDone   = {};
+if (!appState.checksDone) appState.checksDone  = {};
+if (!appState.exDone)     appState.exDone      = {};
+
+// ---- Helpers de fecha/tiempo ----
+// FIX: devuelve fecha LOCAL, no UTC. toISOString() usa UTC y falla de noche en México.
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function weekNumber() {
+  // Parsea como fecha local (no UTC) para evitar el off-by-one de timezone
+  const [sy, sm, sd] = appState.startDate.split('-').map(Number);
+  const [ty, tm, td] = todayStr().split('-').map(Number);
+  const start = new Date(sy, sm-1, sd);
+  const now   = new Date(ty, tm-1, td);
+  const diffDays = Math.floor((now - start) / 86400000);
+  return Math.max(1, Math.floor(diffDays / 7) + 1);
+}
+
+function levelColor(level) {
+  return HOY_DATA[level]?.color || '#888';
+}
+
+// Sesión activa (para event delegation sin closures)
+let _currentSession = null;
+
+// ---- setLevel ----
+function setLevel(level) {
+  appState.level = level;
+  saveState(appState);
+  document.querySelectorAll('.phase-btn').forEach(b => {
+    b.classList.toggle('phase-active', b.dataset.level === level);
+  });
+  renderHoy();
+}
+
+// ---- renderHoy ----
+function renderHoy() {
+  const level   = appState.level;
+  const data    = HOY_DATA[level];
+  const color   = levelColor(level);
+  const today   = new Date();
+  const dayIdx  = today.getDay();
+  const dateKey = todayStr();
+  const weekN   = weekNumber();
+  const totalW  = data.totalWeeks;
+  const sessionKey = data.schedule[dayIdx];
+  const session    = data.sessions[sessionKey];
+
+  // Fecha y semana
+  const dias   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const meses  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('hoy-date').textContent =
+    `${dias[today.getDay()].toUpperCase()} ${today.getDate()} ${meses[today.getMonth()].toUpperCase()} ${today.getFullYear()}`;
+  document.getElementById('hoy-semana').textContent =
+    `SEMANA ${weekN}${totalW < 999 ? ' / ' + totalW : '+'} · NIVEL ${level.toUpperCase()}`;
+
+  // Barra de progreso global
+  const prog = totalW < 999 ? Math.min(100, ((weekN - 1) / totalW) * 100) : 0;
+  const bar = document.getElementById('hoy-prog-bar');
+  bar.style.background = color;
+  setTimeout(() => { bar.style.width = prog + '%'; }, 100);
+
+  _renderMissed(data, today);
+  _renderCalendar(data, today, dayIdx);
+
+  // Workout / Descanso
+  const workoutEl = document.getElementById('hoy-workout');
+  const isRest = sessionKey === 'rest';
+  const isDoneToday = !!appState.done[dateKey];
+
+  _updateBtn(isDoneToday, isRest, color);
+
+  if (isRest) {
+    workoutEl.innerHTML = `
+      <div class="panel">
+        <div class="hoy-rest-card">
+          <div class="hoy-rest-title">☽ Descanso Total</div>
+          <div class="hoy-rest-desc">El músculo crece durante el descanso.<br>Hoy tu única tarea es recuperar.</div>
+          <div class="rest-tips-grid">
+            <div class="rest-tip">🛌 Duerme 7–8 horas</div>
+            <div class="rest-tip">💧 Hidratación activa</div>
+            <div class="rest-tip">🥗 Come tu proteína igual</div>
+            <div class="rest-tip">🚶 Camina si quieres, sin intensidad</div>
+          </div>
+        </div>
+      </div>`;
+  } else {
+    const exDoneArr = appState.exDone[dateKey] || session.exercises.map(() => false);
+    const doneCount = exDoneArr.filter(Boolean).length;
+    const pct = session.exercises.length > 0 ? Math.round((doneCount / session.exercises.length) * 100) : 0;
+
+    // Sin <label> wrapping — evita que el label absorba clicks del botón de video
+    let exHtml = session.exercises.map((ex, idx) => {
+      const done = exDoneArr[idx] || false;
+      return `
+        <div class="ex-row${done ? ' ex-row-done' : ''}" id="exrow-${idx}">
+          <div class="ex-row-lbl">
+            <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleExercise(${idx}, this.checked)">
+            <div style="flex:1;min-width:0">
+              <div class="ex-row-name">
+                ${escapeHtml(ex.name)}
+                <span class="ex-vid-btn" id="vidBtn-${idx}">▶ Video</span>
+              </div>
+              ${ex.note ? `<div class="ex-row-note">${escapeHtml(ex.note)}</div>` : ''}
+            </div>
+            <div class="ex-row-meta">
+              <span class="ex-meta-sets">${escapeHtml(ex.sets)} series</span>
+              <span class="ex-meta-reps">${escapeHtml(ex.reps)}</span>
+              ${ex.rest ? `<span class="ex-meta-rest">${escapeHtml(ex.rest)}</span>` : ''}
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    workoutEl.innerHTML = `
+      <div class="panel">
+        <div class="hoy-workout-hdr">
+          <div>
+            <div class="hoy-workout-title">${session.name}</div>
+            <div class="hoy-workout-dur" style="color:${color}">${session.type} · ${session.duration}</div>
+          </div>
+          <div class="hoy-prog-wrap">
+            <div class="hoy-prog-txt">${doneCount}/${session.exercises.length} ejercicios</div>
+            <div class="wk-prog-bg"><div class="wk-prog-fill" style="background:${color};width:${pct}%"></div></div>
+          </div>
+        </div>
+        <div class="ex-list">${exHtml}</div>
+        ${session.link ? `<a class="ver-link" href="${session.link}">Ver descripción completa ↓</a>` : ''}
+      </div>`;
+
+    // Listeners directos — sin event delegation, sin label interference
+    session.exercises.forEach((ex, idx) => {
+      const btn = document.getElementById('vidBtn-' + idx);
+      if (btn) btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openExModal(ex.name, ex.sets, ex.reps, ex.rest || '', ex.note || '');
+      });
+    });
+  }
+
+  // Comidas del día
+  const mealsDoneArr = (appState.mealsDone[dateKey] || MEALS.map(() => false));
+  const mealsEl = document.getElementById('hoy-meals');
+  let mealsHtml = '<div class="panel"><div class="section-divider">PLAN NUTRICIONAL DE HOY</div><div class="hm-list">';
+  MEALS.forEach((m, idx) => {
+    const done = mealsDoneArr[idx] || false;
+    mealsHtml += `
+      <div class="hm-card${done ? ' hm-done' : ''}" id="hmcard-${idx}">
+        <div class="hm-head" onclick="toggleMealBody(${idx})">
+          <span class="hm-icon">${m.icon}</span>
+          <span class="hm-time">${m.time}</span>
+          <span class="hm-name">${m.name}</span>
+          <span class="hm-kcal">${m.kcal} kcal</span>
+          <label class="hm-chk" onclick="event.stopPropagation()">
+            <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleHoyMeal(${idx}, this.checked)"> Completada
+          </label>
+        </div>
+        <div class="hm-body" id="hmbody-${idx}">
+          <div class="hm-note">${m.note}</div>
+          ${m.items.map(it => `<div class="meal-row"><span class="mr-name">${it.n}</span><span class="mr-amount">${it.a}</span><span class="mr-macro">${it.m}</span></div>`).join('')}
+        </div>
+      </div>`;
+  });
+  mealsHtml += '</div></div>';
+  mealsEl.innerHTML = mealsHtml;
+
+  // Checklist diaria
+  const checksDoneArr = (appState.checksDone[dateKey] || DAILY_CHECKS.map(() => false));
+  const checksEl = document.getElementById('hoy-checks');
+  let checksHtml = '<div class="panel"><div class="section-divider">CHECKLIST DIARIA</div><div class="dc-list">';
+  DAILY_CHECKS.forEach((c, idx) => {
+    const done = checksDoneArr[idx] || false;
+    checksHtml += `
+      <div class="dc-item${done ? ' dc-done' : ''}" id="dcitem-${idx}" onclick="toggleCheck(${idx})">
+        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation();toggleCheck(${idx})">
+        <span>${c}</span>
+      </div>`;
+  });
+  checksHtml += '</div></div>';
+  checksEl.innerHTML = checksHtml;
+}
+
+// ---- Interacciones ----
+function toggleExercise(idx, checked) {
+  const dateKey = todayStr();
+  if (!appState.exDone) appState.exDone = {};
+  const level = appState.level;
+  const session = HOY_DATA[level].sessions[HOY_DATA[level].schedule[new Date().getDay()]];
+  if (!appState.exDone[dateKey]) appState.exDone[dateKey] = session.exercises.map(() => false);
+  appState.exDone[dateKey][idx] = checked;
+  saveState(appState);
+  const row = document.getElementById(`exrow-${idx}`);
+  if (row) row.classList.toggle('ex-row-done', checked);
+  // actualizar barra de progreso ejercicios
+  const doneCount = appState.exDone[dateKey].filter(Boolean).length;
+  const pct = session.exercises.length > 0 ? Math.round((doneCount / session.exercises.length) * 100) : 0;
+  const fill = document.querySelector('.wk-prog-fill');
+  if (fill) fill.style.width = pct + '%';
+  const txt = document.querySelector('.hoy-prog-txt');
+  if (txt) txt.textContent = `${doneCount}/${session.exercises.length} ejercicios`;
+}
+
+function toggleMealBody(idx) {
+  const body = document.getElementById(`hmbody-${idx}`);
+  if (body) body.classList.toggle('hm-open');
+}
+
+function toggleHoyMeal(idx, checked) {
+  const dateKey = todayStr();
+  if (!appState.mealsDone[dateKey]) appState.mealsDone[dateKey] = MEALS.map(() => false);
+  appState.mealsDone[dateKey][idx] = checked;
+  saveState(appState);
+  const card = document.getElementById(`hmcard-${idx}`);
+  if (card) card.classList.toggle('hm-done', checked);
+}
+
+function toggleCheck(idx) {
+  const dateKey = todayStr();
+  if (!appState.checksDone[dateKey]) appState.checksDone[dateKey] = DAILY_CHECKS.map(() => false);
+  appState.checksDone[dateKey][idx] = !appState.checksDone[dateKey][idx];
+  saveState(appState);
+  const item = document.getElementById(`dcitem-${idx}`);
+  if (item) {
+    item.classList.toggle('dc-done', appState.checksDone[dateKey][idx]);
+    const cb = item.querySelector('input[type="checkbox"]');
+    if (cb) cb.checked = appState.checksDone[dateKey][idx];
+  }
+}
+
+// ---- Sub-renders granulares (no reconstruyen toda la página) ----
+
+function _localDateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function _updateBtn(isDoneToday, isRest, color) {
+  const btn = document.getElementById('hoy-complete-btn');
+  if (!btn) return;
+  if (isDoneToday) {
+    btn.textContent = '✓ Sesión completada';
+    btn.style.background = '#1b5e20';
+    btn.disabled = true;
+  } else if (isRest) {
+    btn.textContent = '✓ Marcar día de descanso';
+    btn.style.background = '#37474f';
+    btn.disabled = false;
+  } else {
+    btn.textContent = '✓ Marcar sesión completa';
+    btn.style.background = color;
+    btn.disabled = false;
+  }
+}
+
+function _renderMissed(data, today) {
+  const missedEl = document.getElementById('hoy-missed');
+  if (!missedEl) return;
+  const dNames = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  let missedDays = [];
+  for (let i = 6; i >= 1; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const k = _localDateKey(d);
+    const sk = data.schedule[d.getDay()];
+    if (sk !== 'rest' && sk !== 'rest_active' && !appState.done[k]) {
+      missedDays.push(dNames[d.getDay()]);
+    }
+  }
+  if (missedDays.length > 0) {
+    missedEl.style.display = 'block';
+    missedEl.style.borderColor = '#8b1a1a';
+    missedEl.style.color = '#ef9a9a';
+    // Usa textContent en el strong para evitar innerHTML con datos externos
+    missedEl.textContent = '';
+    const prefix = document.createTextNode('⚠ Sesiones no registradas esta semana: ');
+    const strong = document.createElement('strong');
+    strong.textContent = missedDays.join(', ');
+    const suffix = document.createTextNode('. No te preocupes — sigue adelante.');
+    missedEl.append(prefix, strong, suffix);
+  } else {
+    missedEl.style.display = 'none';
+  }
+}
+
+function _renderCalendar(data, today, dayIdx) {
+  const calEl = document.getElementById('hoy-cal');
+  if (!calEl) return;
+  const dayLabels = ['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
+  let html = '<div style="font-size:0.7em;color:var(--army-khaki);letter-spacing:2px;margin-bottom:8px;">SEMANA ACTUAL</div><div class="mc-grid">';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - today.getDay() + i);
+    const k = _localDateKey(d);  // FIX: fecha local, no UTC
+    const sk = data.schedule[i];
+    const isRest   = sk === 'rest' || sk === 'rest_active';
+    const isDone   = appState.done[k];
+    const isToday  = i === dayIdx;
+    const isPast   = d < today && !isToday;
+    let cellClass = 'mc-cell';
+    let ico = '';
+    if (isToday)        { cellClass += ' mc-today';     ico = isDone ? '✓' : '▶'; }
+    else if (isDone)    { cellClass += ' mc-done';      ico = '✓'; }
+    else if (isRest)    { cellClass += ' mc-rest-cell'; ico = '·'; }
+    else if (isPast)    { cellClass += ' mc-missed';    ico = '—'; }
+    html += `<div class="${cellClass}"><div class="mc-lbl">${dayLabels[i]}</div><div class="mc-ico">${ico}</div></div>`;
+  }
+  html += '</div>';
+  calEl.innerHTML = html;
+}
+
+// completeDay: granular — no reconstruye comidas/checks abiertos
+function completeDay() {
+  const dateKey = todayStr();
+  appState.done[dateKey] = true;
+  _writeToDisk(appState); // escrita inmediata (no debounced) para acción crítica
+  const level = appState.level;
+  const data  = HOY_DATA[level];
+  const today = new Date();
+  const dayIdx = today.getDay();
+  const sessionKey = data.schedule[dayIdx];
+  const isRest = sessionKey === 'rest';
+  _updateBtn(true, isRest, levelColor(level));
+  _renderCalendar(data, today, dayIdx);
+  _renderMissed(data, today);
+}
+
+function resetProgram() {
+  if (!confirm('¿Reiniciar todo el progreso? Esta acción no se puede deshacer.')) return;
+  appState = {
+    level: appState.level,
+    startDate: todayStr(), // fecha local, no UTC
+    done: {},
+    mealsDone: {},
+    checksDone: {},
+    exDone: {}
+  };
+  _writeToDisk(appState); // escrita inmediata, no debounced
+  renderHoy();
+}
+
+// ---- Inicializar ----
+(function() {
+  // Sync botones de nivel con estado guardado
+  document.querySelectorAll('.phase-btn').forEach(b => {
+    b.classList.toggle('phase-active', b.dataset.level === appState.level);
+  });
+  renderHoy();
+}());
+
+// Animate progress bars on load
+window.addEventListener('load', () => {
+  const bars = document.querySelectorAll('.progress-bar-fill');
+  bars.forEach(bar => {
+    const w = bar.style.width;
+    bar.style.width = '0';
+    setTimeout(() => { bar.style.width = w; }, 300);
+  });
+});
+
+// =================== MODAL DE EJERCICIO ===================
+
+const EX_DB = {
+  // ── PRINCIPIANTE ──────────────────────────────────────
+  'Flexiones desde rodillas': {
+    muscles: 'Pecho · Tríceps · Hombro anterior',
+    steps: [
+      'Arrodíllate y apoya las manos al ancho de hombros.',
+      'Baja el pecho hasta casi tocar el suelo manteniendo el cuerpo recto desde rodillas hasta hombros.',
+      'Empuja el suelo para volver arriba extendiendo los codos.',
+      'No dejes caer la cadera ni arquees la espalda.'
+    ],
+    tips: 'Activa el core como si te fueran a pegar un puñetazo en el abdomen.',
+    mistakes: 'Codos muy abiertos (>90°) → lesión de hombro. Cadera caída → inútil para el pecho.',
+    youtube: 'flexiones desde rodillas tutorial'
+  },
+  'Sentadilla goblet': {
+    muscles: 'Cuádriceps · Glúteos · Core',
+    steps: [
+      'Sostén un peso frente al pecho (botella de agua, mochila, kettlebell).',
+      'Pies al ancho de hombros, punteras ligeramente hacia afuera.',
+      'Baja controlado empujando las rodillas hacia afuera hasta que los muslos queden paralelos al suelo.',
+      'Empuja el suelo y sube extendiendo caderas y rodillas.'
+    ],
+    tips: 'Los codos van dentro de las rodillas en el punto más bajo para abrir la cadera.',
+    mistakes: 'Rodillas hacia adentro (valgo) → carga las rodillas. Talones levantados → falta movilidad de tobillo.',
+    youtube: 'sentadilla goblet tutorial'
+  },
+  'Remo invertido': {
+    muscles: 'Dorsal · Romboides · Bíceps · Core',
+    steps: [
+      'Coloca una barra baja, mesa resistente o anillas a altura de cadera.',
+      'Agárrate con las manos al ancho de hombros, cuerpo recto como una tabla.',
+      'Tira del pecho hacia la barra/mesa juntando los omóplatos.',
+      'Baja lento y repite sin que la cadera baje.'
+    ],
+    tips: 'Cuanto más horizontal esté tu cuerpo, más difícil. Inclínate más si es muy fácil.',
+    mistakes: 'Cadera caída = se pierde la tensión del core. Codos muy abiertos = menos espalda y más hombro.',
+    youtube: 'remo invertido australiano tutorial'
+  },
+  'Zancadas alternas': {
+    muscles: 'Cuádriceps · Glúteos · Isquiotibiales · Equilibrio',
+    steps: [
+      'De pie, da un paso amplio hacia adelante.',
+      'Baja la rodilla trasera casi hasta el suelo (1–2 cm).',
+      'Empuja el talón delantero para volver al centro.',
+      'Alterna piernas en cada repetición.'
+    ],
+    tips: 'El torso va recto, no te inclines hacia adelante.',
+    mistakes: 'Rodilla delantera pasa la punta del pie → estrés en la articulación. Pasos cortos → poca activación de glúteo.',
+    youtube: 'zancadas alternas tutorial'
+  },
+  'Plancha frontal': {
+    muscles: 'Core (transverso) · Glúteos · Hombros · Espalda baja',
+    steps: [
+      'Apoya antebrazos y puntas de pies. Codos bajo los hombros.',
+      'El cuerpo forma una línea recta de cabeza a talones.',
+      'Aprieta glúteos y abdomen. No dejes subir ni bajar la cadera.',
+      'Respira despacio y mantén la posición.'
+    ],
+    tips: 'Si tiemblas es normal — el objetivo es no colapsar la forma.',
+    mistakes: 'Cadera elevada (postura de pirámide) o caída → no activa el core. Mirar al frente en vez de al suelo → tensión cervical.',
+    youtube: 'plancha abdominal correcta tutorial'
+  },
+  'Glute Bridge': {
+    muscles: 'Glúteos · Isquiotibiales · Core',
+    steps: [
+      'Tumbado boca arriba, rodillas dobladas, pies al ancho de caderas.',
+      'Empuja los talones contra el suelo y eleva las caderas.',
+      'En la cima aprieta los glúteos fuertemente 1–2 segundos.',
+      'Baja lento sin que la cadera toque el suelo entre repeticiones.'
+    ],
+    tips: 'La espalda baja no debe arquearse en exceso. El movimiento viene de la cadera, no de los lumbares.',
+    mistakes: 'Empujar con los dedos de los pies → activa cuádriceps en vez de glúteos. Bajar demasiado rápido → perdes tensión.',
+    youtube: 'glute bridge tutorial'
+  },
+  'Mountain Climbers lentos': {
+    muscles: 'Core · Hombros · Cadera flexora · Cardio',
+    steps: [
+      'Posición de plancha alta (brazos extendidos, manos bajo hombros).',
+      'Lleva una rodilla al pecho lentamente.',
+      'Vuelve atrás controlado y repite con la otra pierna.',
+      'Mantén las caderas estables, sin balanceo.'
+    ],
+    tips: 'Lento = más activación de core. Rápido = más cardio. Para principiante: LENTO.',
+    mistakes: 'Cadera que sube y baja al mover la pierna → el core no está trabajando.',
+    youtube: 'mountain climbers tutorial'
+  },
+  'Abdominales bicicleta': {
+    muscles: 'Recto abdominal · Oblicuos · Cadera flexora',
+    steps: [
+      'Tumbado boca arriba, manos detrás de la cabeza (sin jalar el cuello).',
+      'Eleva hombros del suelo y lleva el codo derecho hacia la rodilla izquierda.',
+      'Simultáneamente extiende la pierna derecha.',
+      'Alterna en movimiento de pedaleo controlado.'
+    ],
+    tips: 'El movimiento de rotación viene del torso, no de jalar la cabeza con las manos.',
+    mistakes: 'Cervicales jaladas hacia adelante → lesión de cuello. Codos que no rotan → solo es un crunch.',
+    youtube: 'abdominales bicicleta tutorial'
+  },
+  'Plancha lateral': {
+    muscles: 'Oblicuos · Glúteo medio · Estabilizadores de cadera',
+    steps: [
+      'Apoya el antebrazo y el pie lateral del mismo lado.',
+      'Eleva la cadera formando una línea recta de cabeza a pies.',
+      'El otro brazo puede estar al costado o apuntando al techo.',
+      'Mantén la posición sin dejar caer la cadera.'
+    ],
+    tips: 'Si es muy difícil, apoya la rodilla en vez del pie.',
+    mistakes: 'Cadera caída → el oblicuo no trabaja. Cuerpo rotado hacia adelante o atrás → pierde el plano lateral.',
+    youtube: 'plancha lateral tutorial'
+  },
+  'Burpee modificado sin salto': {
+    muscles: 'Cuerpo completo · Cardio · Coordinación',
+    steps: [
+      'De pie, baja las manos al suelo doblando las rodillas.',
+      'Lleva los pies hacia atrás hasta posición de plancha.',
+      'Vuelve los pies hacia las manos.',
+      'Levántate de pie. Sin salto — simplemente estírate.'
+    ],
+    tips: 'El ritmo es constante y controlado. No importa la velocidad, importa no descansar entre reps.',
+    mistakes: 'Cadera elevada en la plancha → la posición no es correcta. Saltar si tienes sobrepeso → impacto excesivo en articulaciones.',
+    youtube: 'burpee modificado sin salto tutorial'
+  },
+  'Caminata rápida exterior': {
+    muscles: 'Cardio (zona 2) · Piernas · Mente',
+    steps: [
+      'Ritmo donde puedes mantener una conversación pero con algo de esfuerzo.',
+      'Brazos activos, balanceándose alternados.',
+      'Postura erguida, mirada al frente.',
+      'Respira por la nariz si puedes.'
+    ],
+    tips: 'Zona 2 = frecuencia cardíaca 60–70% del máximo. Calculado: 220 − 40 años = 180 máx → Zona 2: 108–126 ppm.',
+    mistakes: 'Ir demasiado rápido → sales de zona 2 y no es "activo/suave". Encorvarse al caminar.',
+    youtube: 'caminata zona 2 cardio beneficios'
+  },
+  'Saltar cuerda suave': {
+    muscles: 'Cardio · Pantorrillas · Coordinación',
+    steps: [
+      'Si no tienes cuerda, simula el movimiento.',
+      'Pies juntos o alternos. Rebota levemente en las puntas.',
+      'Muñecas rotan la cuerda, no los brazos.',
+      'Ritmo tranquilo — no es competencia.'
+    ],
+    tips: 'Con 2 minutos de cuerda quemas tanto como 400 m corriendo.',
+    mistakes: 'Saltar muy alto → innecesario y cansa más. Aterrizar con el talón → impacto dañino.',
+    youtube: 'saltar cuerda principiantes tutorial'
+  },
+  // ── INTERMEDIO ───────────────────────────────────────
+  'Flexiones diamante': {
+    muscles: 'Pecho interior · Tríceps · Hombro anterior',
+    steps: [
+      'Manos juntas formando un diamante/triángulo con índices y pulgares.',
+      'Posición de plancha alta, manos bajo el esternón.',
+      'Baja el pecho hacia las manos manteniendo los codos cerca del cuerpo.',
+      'Empuja hacia arriba extendiendo totalmente los codos.'
+    ],
+    tips: 'Son más difíciles que las normales — reduce reps si hace falta.',
+    mistakes: 'Codos muy abiertos = vuelve a ser una flexión normal. Cadera que sube al bajar = falta fuerza.',
+    youtube: 'flexiones diamante tutorial'
+  },
+  'Flexiones arqueras': {
+    muscles: 'Pecho · Tríceps · Estabilizadores laterales',
+    steps: [
+      'Manos muy separadas (el doble del ancho de hombros).',
+      'Baja el cuerpo hacia un lado doblando un codo, el otro brazo queda extendido.',
+      'Empuja desde el lado que bajaste para volver al centro.',
+      'Alterna lados en cada rep.'
+    ],
+    tips: 'Progresión hacia la flexión con un solo brazo. Cuanto más te acercas al lado, más difícil.',
+    mistakes: 'Girar el torso → pierde la tensión correcta. Brazo extendido doblado → no es arquera.',
+    youtube: 'archer push up flexion arquera tutorial'
+  },
+  'Pike push-up': {
+    muscles: 'Hombro (deltoides) · Tríceps · Trapecios',
+    steps: [
+      'Posición de plancha alta y eleva la cadera hasta formar una V invertida.',
+      'La cabeza apunta hacia el suelo.',
+      'Dobla los codos bajando la cabeza entre las manos.',
+      'Empuja el suelo para volver a la V.'
+    ],
+    tips: 'Cuanto más vertical sea tu cuerpo, más se asemeja al press de hombros con tu peso.',
+    mistakes: 'Cadera que baja al subir = vuelve a ser una flexión normal. Codos muy abiertos = menos hombro.',
+    youtube: 'pike push up tutorial hombros'
+  },
+  'Dips en silla': {
+    muscles: 'Tríceps · Pecho inferior · Hombro anterior',
+    steps: [
+      'Manos en el borde de una silla o banco, detrás de ti.',
+      'Pies extendidos al frente (más difícil) o rodillas dobladas (más fácil).',
+      'Baja flexionando los codos hasta ~90°.',
+      'Empuja hacia arriba extendiendo los codos.'
+    ],
+    tips: 'Mantén el cuerpo pegado a la silla — si te alejas, trabajan más los hombros que los tríceps.',
+    mistakes: 'Bajar demasiado → impacto en el hombro anterior. Codos muy abiertos = lesión.',
+    youtube: 'fondos en silla dips triceps tutorial'
+  },
+  'Plancha con toque hombro': {
+    muscles: 'Core anti-rotación · Hombros · Glúteos',
+    steps: [
+      'Posición de plancha alta (brazos extendidos).',
+      'Sin mover la cadera, levanta una mano y toca el hombro opuesto.',
+      'Vuelve la mano al suelo y repite con el otro lado.',
+      'La cadera debe permanecer completamente estable.'
+    ],
+    tips: 'Separa los pies más de lo normal al inicio para mayor base de soporte.',
+    mistakes: 'Cadera que rota o balancea = el core no está trabajando. Movimiento rápido = trampa.',
+    youtube: 'plancha toque hombro core tutorial'
+  },
+  'Dominadas negativas': {
+    muscles: 'Dorsal · Bíceps · Romboides · Core',
+    steps: [
+      'Sube a la barra con ayuda (silla, salto).',
+      'Comienza en la posición de arriba, barbilla sobre la barra.',
+      'Baja MUY lento (4–6 segundos) controlando el descenso.',
+      'Cuelga al final y vuelve a subir con ayuda.'
+    ],
+    tips: 'La fase excéntrica (bajar) es donde más se construye músculo. No desperdicies la bajada.',
+    mistakes: 'Bajar en caída libre → no sirve de nada. Hombros subidos hacia las orejas → mala posición.',
+    youtube: 'dominadas negativas excentrico tutorial'
+  },
+  'Remo australiano': {
+    muscles: 'Dorsal · Romboides · Bíceps · Core isométrico',
+    steps: [
+      'Igual que el remo invertido pero el cuerpo más horizontal al suelo.',
+      'Agárrate a la barra con las manos al ancho de hombros.',
+      'Tira del pecho hacia la barra.',
+      'Baja lento sin tocar el suelo.'
+    ],
+    tips: 'Imagina que intentas meter los codos en los bolsillos traseros.',
+    mistakes: 'Cadera que cae → se convierte en un puente, no un remo. Encogerse de hombros al llegar arriba.',
+    youtube: 'remo australiano barras tutorial'
+  },
+  'Dominadas asistidas': {
+    muscles: 'Dorsal · Bíceps · Romboides',
+    steps: [
+      'Cuelga de la barra con agarre prono (palmas al frente), ancho de hombros.',
+      'Usa una banda elástica en los pies o rodillas para reducir el peso.',
+      'Tira hacia arriba hasta que la barbilla supere la barra.',
+      'Baja lento y controlado.'
+    ],
+    tips: 'A medida que mejoras, usa bandas más finas. El objetivo es dominar las dominadas libres.',
+    mistakes: 'Usar la inercia del cuerpo (kipping) → las dominadas asistidas deben ser estrictas.',
+    youtube: 'dominadas asistidas banda elastica tutorial'
+  },
+  'Superman': {
+    muscles: 'Extensores de espalda · Glúteos · Isquiotibiales',
+    steps: [
+      'Tumbado boca abajo, brazos extendidos al frente.',
+      'Simultáneamente eleva brazos, pecho y piernas del suelo.',
+      'Mantén 2 segundos arriba apretando glúteos.',
+      'Baja lento y repite.'
+    ],
+    tips: 'No eleves demasiado — el movimiento es pequeño pero muy efectivo.',
+    mistakes: 'Elevar el cuello en exceso → tensión cervical. Solo levantar piernas o solo brazos = incompleto.',
+    youtube: 'ejercicio superman espalda baja tutorial'
+  },
+  'Curl bíceps con mochila': {
+    muscles: 'Bíceps · Braquial · Antebrazo',
+    steps: [
+      'Pon peso en una mochila y agárrala por el asa.',
+      'De pie, codo pegado al cuerpo.',
+      'Flexiona el codo subiendo la mochila hacia el hombro.',
+      'Baja lento — 3 segundos de bajada.'
+    ],
+    tips: 'El codo NO debe moverse hacia adelante — solo el antebrazo se mueve.',
+    mistakes: 'Balanceo del cuerpo para subir = trampa de momentum. Codo que se abre = menos bíceps.',
+    youtube: 'curl biceps mochila en casa tutorial'
+  },
+  'Sentadilla búlgara': {
+    muscles: 'Cuádriceps · Glúteos · Equilibrio',
+    steps: [
+      'Un pie elevado detrás tuyo en una silla o escalón.',
+      'El pie delantero a ~1 paso de distancia.',
+      'Baja la rodilla trasera hacia el suelo.',
+      'Empuja desde el talón delantero para volver arriba.'
+    ],
+    tips: 'Es normal que las primeras veces te costará el equilibrio. Usa una pared para estabilizarte.',
+    mistakes: 'Pie delantero demasiado cerca → la rodilla pasa el pie. Torso muy inclinado = más glúteo que cuádriceps (depende del objetivo).',
+    youtube: 'sentadilla bulgara tutorial'
+  },
+  'Pistol squat asistido': {
+    muscles: 'Cuádriceps · Glúteos · Tobillo · Equilibrio',
+    steps: [
+      'Apóyate en una pared, poste o TRX con una mano.',
+      'Eleva una pierna al frente extendida.',
+      'Baja en una sola pierna hasta que el muslo quede paralelo o más bajo.',
+      'Empuja hacia arriba sin dejar que la rodilla colapse.'
+    ],
+    tips: 'Trabaja la movilidad de tobillo diario — es la limitación más común.',
+    mistakes: 'Rodilla que colapsa hacia adentro → lesión. Talón que se levanta → falta movilidad.',
+    youtube: 'pistol squat asistido progresion tutorial'
+  },
+  'Zancadas con salto': {
+    muscles: 'Cuádriceps · Glúteos · Potencia · Cardio',
+    steps: [
+      'Posición de zancada baja.',
+      'Salta explosivamente hacia arriba.',
+      'En el aire cambia las piernas de posición.',
+      'Aterriza en zancada con la pierna opuesta adelante y absorbe el impacto.'
+    ],
+    tips: 'Si las rodillas duelen, vuelve a zancadas normales hasta tener más fuerza.',
+    mistakes: 'Aterrizar con la pierna rígida → impacto en rodilla. Torso que se inclina al aterrizar.',
+    youtube: 'zancadas con salto jump lunge tutorial'
+  },
+  'Nordic curl': {
+    muscles: 'Isquiotibiales (excéntrico) · Glúteos',
+    steps: [
+      'Arrodíllate y ancla los pies bajo algo fijo (mueble, compañero).',
+      'Con el cuerpo recto, inclínate hacia adelante MUY lento.',
+      'Cuando no puedas más, apoya las manos y baja el resto.',
+      'Usa los brazos para ayudarte a volver arriba.'
+    ],
+    tips: 'Es uno de los ejercicios más efectivos para prevenir lesiones de isquiotibial.',
+    mistakes: 'Bajar rápido = pierde todo el beneficio. Cadera que se flexiona = trampa.',
+    youtube: 'nordic curl isquiotibiales tutorial'
+  },
+  'L-Sit progresivo': {
+    muscles: 'Core · Flexores de cadera · Tríceps · Hombros',
+    steps: [
+      'Apoya las manos en el suelo (o paralelas), brazos extendidos.',
+      'Eleva las rodillas al pecho primero (tuck L-sit).',
+      'Progresivamente extiende las piernas.',
+      'Objetivo: piernas paralelas al suelo, cuerpo en L.'
+    ],
+    tips: 'Cada 5 segundos que aguantes es un logro. Progresa de tuck → medio → completo.',
+    mistakes: 'Hombros encogidos → falta depresión escapular. Rodillas que caen = aún no hay fuerza suficiente.',
+    youtube: 'L-sit progresion tutorial calistenia'
+  },
+  'Dragon flag negativa': {
+    muscles: 'Core completo · Espalda baja · Hombros',
+    steps: [
+      'Tumbado boca arriba, agarra algo fijo detrás de tu cabeza.',
+      'Eleva el cuerpo recto como una tabla hasta vertical (o usa salto).',
+      'Baja el cuerpo lento (4–6 seg) manteniéndolo recto como una tabla.',
+      'No toques el suelo con la espalda baja — para justo antes.'
+    ],
+    tips: 'Bruce Lee lo hacía. Si puedes hacer 10 dragon flags completos, tu core es élite.',
+    mistakes: 'Cadera que cae (cuerpo doblado) = no es dragon flag. Bajar rápido = inútil.',
+    youtube: 'dragon flag tutorial progresion'
+  },
+  // ── AVANZADO ──────────────────────────────────────────
+  'Práctica Handstand': {
+    muscles: 'Hombros · Tríceps · Core · Equilibrio vestibular',
+    steps: [
+      'Contra la pared: manos a 15 cm de la pared, sube con una patada.',
+      'Presiona el suelo alejando los hombros de las orejas.',
+      'Glúteos apretados, pies juntos apuntando al techo.',
+      'Practica el balance quitando un pie de la pared.'
+    ],
+    tips: 'Practica 10 min diarios — la consistencia es más importante que la intensidad.',
+    mistakes: 'Espalda muy arqueada (banana handstand) → falta de core y movilidad de hombro.',
+    youtube: 'handstand pino tutorial principiantes'
+  },
+  'Front Lever progresivo': {
+    muscles: 'Dorsal · Core · Bíceps · Hombros',
+    steps: [
+      'Cuelga de la barra, agarre prono.',
+      'Tuck: rodillas al pecho, caderas a altura de la barra.',
+      'Medio: una pierna extendida, otra doblada.',
+      'Completo: cuerpo horizontal al suelo, totalmente recto.'
+    ],
+    tips: 'La depresión escapular (hombros hacia abajo y atrás) es clave para no lesionarse.',
+    mistakes: 'Hombros elevados → lesión de manguito. Cadera que cae → la palanca no es correcta.',
+    youtube: 'front lever progresion tutorial calistenia'
+  },
+  'Muscle-up negativo': {
+    muscles: 'Dorsal · Tríceps · Pecho · Core',
+    steps: [
+      'Salta o usa silla para colocarte en la posición de arriba (encima de la barra).',
+      'Baja lentísimo la fase de dip (tríceps) hasta quedar colgando.',
+      'Continúa bajando la fase de pull hasta quedar completamente colgado.',
+      'Vuelve arriba con ayuda y repite.'
+    ],
+    tips: 'El muscle-up es 40% fuerza y 60% técnica. La transición es la parte más técnica.',
+    mistakes: 'Bajar en caída libre → no aporta nada. No controlar las dos fases por separado.',
+    youtube: 'muscle up negativo excentrico tutorial'
+  },
+  'Planche lean': {
+    muscles: 'Hombros (anterior) · Core · Muñecas',
+    steps: [
+      'Posición de plancha alta (brazos extendidos).',
+      'Inclina el cuerpo hacia adelante desplazando los hombros delante de las manos.',
+      'Mantén brazos rectos y cuerpo tenso como una tabla.',
+      'Aguanta el tiempo objetivo y vuelve.'
+    ],
+    tips: 'Cuanto más adelante van los hombros, más difícil. Progresión hacia la planche completa.',
+    mistakes: 'Codos doblados → no es lean, es una flexión parcial. Cadera elevada → se pierde la tensión.',
+    youtube: 'planche lean progresion tutorial'
+  },
+  'L-Sit completo': {
+    muscles: 'Core · Flexores de cadera · Tríceps · Hombros',
+    steps: [
+      'Apoya manos en suelo o paralelas, brazos completamente extendidos.',
+      'Eleva las piernas completamente extendidas y paralelas al suelo.',
+      'Mantén los hombros deprimidos (alejados de las orejas).',
+      'Aguanta la posición el tiempo objetivo.'
+    ],
+    tips: 'Si las piernas bajan solas, trabaja el flexor de cadera con elevaciones de piernas colgado.',
+    mistakes: 'Rodillas dobladas → es un tuck L-sit. Hombros hacia arriba → lesión y mal rendimiento.',
+    youtube: 'L-sit completo tutorial avanzado'
+  },
+  'One-arm push-up asistido': {
+    muscles: 'Pecho · Tríceps · Core anti-rotación · Hombro',
+    steps: [
+      'Posición de flexión con una mano, la otra apoyada en una pared lateral.',
+      'El pie contrario al brazo de trabajo va más abierto para balance.',
+      'Baja el pecho hasta casi tocar el suelo.',
+      'Empuja con el brazo principal.',
+      'Progresión: quita gradualmente el apoyo de la pared.'
+    ],
+    tips: 'Coloca la mano en el centro del pecho, no al lado. El cuerpo inevitablemente rota — contrólalo.',
+    mistakes: 'Cadera que se eleva para compensar → trampa. Cuerpo completamente de lado → ya no es push-up.',
+    youtube: 'one arm push up progresion tutorial'
+  },
+  'Dominadas lastradas': {
+    muscles: 'Dorsal · Bíceps · Romboides · Core',
+    steps: [
+      'Cuelga de la barra con mochila o cinturón de lastre.',
+      'Agarre al ancho de hombros, palmas al frente.',
+      'Sube hasta que la barbilla supere la barra.',
+      'Baja LENTO — 3 segundos de bajada.'
+    ],
+    tips: 'Empieza con 5 kg. La bajada controlada es donde más se construye masa muscular.',
+    mistakes: 'Kipping (impulso) con lastre → peligroso. Subir solo hasta los ojos → rango incompleto.',
+    youtube: 'dominadas lastradas weighted pull ups tutorial'
+  },
+  'Pistol squat completo': {
+    muscles: 'Cuádriceps · Glúteos · Estabilizadores · Tobillo',
+    steps: [
+      'De pie en una pierna, la otra extendida al frente.',
+      'Baja en la pierna de apoyo hasta que el glúteo casi toque el talón.',
+      'Rodilla de apoyo no debe colapsar hacia adentro.',
+      'Empuja desde el talón para volver arriba.'
+    ],
+    tips: 'La movilidad de tobillo es el factor limitante. Practica elevaciones de talón diario.',
+    mistakes: 'Talón que se levanta → pon un pequeño taco bajo el talón mientras ganas movilidad.',
+    youtube: 'pistol squat completo tutorial'
+  },
+  'Dragon flag': {
+    muscles: 'Core completo · Espalda baja · Hombros · Fuerza isométrica',
+    steps: [
+      'Tumbado, agarra algo fijo detrás de la cabeza.',
+      'Eleva el cuerpo recto hasta vertical.',
+      'Baja lento manteniendo el cuerpo como una tabla.',
+      'Solo los hombros/espalda alta permanecen en contacto con el suelo.'
+    ],
+    tips: 'Completo y excéntrico. Si tiemblas violentamente, baja la intensidad con el excéntrico.',
+    mistakes: 'Cadera doblada → no es dragon flag. Espalda alta que se despega del suelo → pierdes el punto de apoyo.',
+    youtube: 'dragon flag tutorial completo'
+  },
+  'Archer pull-up': {
+    muscles: 'Dorsal unilateral · Bíceps · Romboides',
+    steps: [
+      'Agarra la barra muy ancha (mucho más que hombros).',
+      'Tira hacia un lado doblando ese codo, el otro brazo queda casi extendido.',
+      'Sube hasta que el hombro del lado que jala esté a la altura de la mano.',
+      'Baja y alterna lados.'
+    ],
+    tips: 'Progresión hacia la dominada con un solo brazo. Cuanto más se extiende el brazo recto, más difícil.',
+    mistakes: 'Brazo "recto" que se dobla demasiado → pierde el estímulo unilateral.',
+    youtube: 'archer pull up dominada arquera tutorial'
+  },
+  'Test flexiones 2 min': {
+    muscles: 'Pecho · Tríceps · Hombros · Resistencia muscular',
+    steps: [
+      'Estándar APFT: manos al ancho de hombros, cuerpo recto.',
+      'Baja hasta que el pecho toque el suelo (o 90° de codo).',
+      'Sube completamente extendiendo los codos.',
+      'Cuenta solo las repeticiones perfectas durante 2 minutos.'
+    ],
+    tips: 'Divide en series: 20+15+10+5 con breakers de 5 seg en posición alta.',
+    mistakes: 'Cadera que baja o sube → repetición inválida en evaluación militar.',
+    youtube: 'test APFT flexiones militares'
+  },
+  'Test dominadas': {
+    muscles: 'Dorsal · Bíceps · Resistencia de jalón',
+    steps: [
+      'Agarre prono (palmas al frente), ancho de hombros.',
+      'Cuelga completamente extendido entre cada rep.',
+      'Sube hasta que la barbilla supere la barra.',
+      'Sin kipping ni impulso.'
+    ],
+    tips: 'Respira en el punto más bajo. No aguantes el aliento.',
+    mistakes: 'Kipping invalidado. Barbilla que no supera la barra = no cuenta.',
+    youtube: 'test dominadas militares maximo'
+  },
+  'Carrera 5 km': {
+    muscles: 'Cardio · Piernas · Resistencia',
+    steps: [
+      'Empieza al ritmo que puedas mantener durante todo el recorrido.',
+      'Mantén la cadencia (pasos/min) constante — mejor 170–180 pasos/min.',
+      'Postura: torso ligeramente inclinado, brazos a 90°.',
+      'El objetivo militar es <22 minutos (ritmo ~4:24/km).'
+    ],
+    tips: 'Si no puedes correr 5 km seguidos todavía, alterna carrera/caminata (run-walk intervals).',
+    mistakes: 'Salir demasiado rápido en el primer km → te fundes en los últimos 2 km.',
+    youtube: '5km carrera entrenamiento plan'
+  },
+  'Caminata con mochila (rucking)': {
+    muscles: 'Cardio · Espalda · Piernas · Aguante mental',
+    steps: [
+      'Carga una mochila con 10–15 kg (botellas de agua, libros).',
+      'Camina a ritmo rápido pero sostenible.',
+      'Mantén la postura erguida — no te inclines hacia adelante.',
+      'Objetivo: 5–8 km o 30–45 min.'
+    ],
+    tips: 'El rucking es el cardio oficial del ejército. Quema 3× más calorías que caminar sin peso.',
+    mistakes: 'Peso mal distribuido (todo abajo) → lesión de espalda. Encorvarse para compensar el peso.',
+    youtube: 'rucking caminata mochila militar beneficios'
+  }
+};
+
+let _currentYtQuery = '';
+
+function openExModal(name, sets, reps, rest, note) {
+  const db = EX_DB[name] || {};
+  _currentYtQuery = db.youtube || (name + ' ejercicio tutorial como hacer');
+  const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(_currentYtQuery);
+
+  document.getElementById('exm-title').textContent    = name;
+  document.getElementById('exm-muscles').textContent  = db.muscles || '—';
+  document.getElementById('exm-sets').textContent     = sets;
+  document.getElementById('exm-reps').textContent     = reps;
+  document.getElementById('exm-rest').textContent     = rest || '—';
+
+  const stepsEl = document.getElementById('exm-steps');
+  stepsEl.innerHTML = db.steps
+    ? db.steps.map((s,i) => `<li><b>${i+1}.</b> ${escapeHtml(s)}</li>`).join('')
+    : `<li>${escapeHtml(note || 'Sin instrucciones disponibles.')}</li>`;
+
+  document.getElementById('exm-tips').textContent     = db.tips     || '—';
+  document.getElementById('exm-mistakes').textContent = db.mistakes || '—';
+  document.getElementById('exm-yt').href = ytUrl;
+
+  // Resetea el video: vuelve al placeholder (para no dejar el video anterior)
+  const wrap = document.getElementById('exm-video-wrap');
+  const placeholder = document.getElementById('exm-vid-placeholder');
+  // Quita cualquier iframe anterior
+  const oldFrame = wrap.querySelector('iframe');
+  if (oldFrame) oldFrame.remove();
+  placeholder.style.display = 'flex';
+
+  document.getElementById('ex-modal-overlay').classList.add('exm-open');
+  document.body.style.overflow = 'hidden';
+}
+
+function loadExVideo() {
+  const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(_currentYtQuery);
+  window.open(ytUrl, '_blank', 'noopener');
+}
+
+function closeExModal() {
+  document.getElementById('ex-modal-overlay').classList.remove('exm-open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('ex-modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeExModal();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeExModal();
+});
+
+// (clicks del HOY tab manejados con listeners directos en renderHoy)
+
+// ---- Exportar / Importar progreso ----
+function exportData() {
+  const payload = { v: LS_VER, exportDate: new Date().toISOString(), data: appState };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `calistenia_backup_${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const VALID_LEVELS = ['beginner', 'intermediate', 'advanced'];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const previousState = appState; // punto de restauración si algo falla
+    try {
+      const parsed = JSON.parse(e.target.result);
+      const data   = parsed.data || parsed; // acepta formato con o sin envelope
+      if (!VALID_LEVELS.includes(data.level) || !data.startDate) throw new Error('Formato inválido');
+      if (!confirm(`¿Importar backup del ${parsed.exportDate ? new Date(parsed.exportDate).toLocaleDateString() : 'archivo'}? Se reemplazará el progreso actual.`)) return;
+      appState = data;
+      renderHoy(); // se prueba el render ANTES de persistir
+      _writeToDisk(appState);
+      alert('Progreso importado correctamente.');
+    } catch(err) {
+      appState = previousState; // revierte el estado si el render o el parseo fallaron
+      alert('Error al importar: el archivo no es un backup válido.');
+    }
+  };
+  reader.readAsText(file);
+  input.value = ''; // reset para poder importar el mismo archivo dos veces
+}
+
+// ---- Busca la clave más cercana en EX_DB dado un texto de nombre ----
+function findExKey(rawName) {
+  const n = rawName.toLowerCase().trim();
+  // 1. Coincidencia exacta
+  if (EX_DB[rawName]) return rawName;
+  // 2. La clave empieza con las primeras dos palabras del nombre
+  const twoWords = n.split(' ').slice(0,2).join(' ');
+  const match2 = Object.keys(EX_DB).find(k => k.toLowerCase().startsWith(twoWords));
+  if (match2) return match2;
+  // 3. El nombre contiene la primera palabra de la clave
+  const match1 = Object.keys(EX_DB).find(k => n.includes(k.toLowerCase().split(' ')[0]));
+  if (match1) return match1;
+  return rawName; // fallback: muestra el nombre sin instrucciones guardadas
+}
+
+// ---- Inicialización de botones de video en secciones estáticas ----
+// Se llama directamente (no DOMContentLoaded) porque el DOM ya está listo
+// cuando este script se ejecuta al final del body.
+function initStaticVideoButtons() {
+
+  // ── 1. Tablas detalladas: span.ex-name ──────────────────────────
+  document.querySelectorAll('span.ex-name').forEach(function(span) {
+    // Evita doble inicialización
+    if (span.dataset.vidInit) return;
+    span.dataset.vidInit = '1';
+
+    const vidBtn = document.createElement('span');
+    vidBtn.className = 'ex-vid-btn';
+    vidBtn.textContent = '▶ Video';
+    span.appendChild(vidBtn);
+
+    vidBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const row  = span.closest('tr');
+      const name = span.firstChild && span.firstChild.nodeType === Node.TEXT_NODE
+        ? span.firstChild.textContent.trim()
+        : span.textContent.replace('▶ Video','').trim();
+      const sets = row ? (row.querySelector('.ex-sets')||{}).textContent||'—' : '—';
+      const reps = row ? (row.querySelector('.ex-reps')||{}).textContent||'—' : '—';
+      const rest = row ? (row.querySelector('.ex-rest')||{}).textContent||'' : '';
+      const note = row ? (row.querySelector('.ex-note')||{}).textContent||'' : '';
+      openExModal(findExKey(name), sets, reps, rest, note);
+    });
+  });
+
+  // ── 2. Resúmenes de día: <b> dentro de .dr-exercises ────────────
+  document.querySelectorAll('.dr-exercises b').forEach(function(b) {
+    if (b.dataset.vidInit) return;
+    b.dataset.vidInit = '1';
+
+    b.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const name = b.textContent.trim();
+      // Extrae series/reps del texto que sigue al <b>
+      let sibling = b.nextSibling;
+      let txt = '';
+      while (sibling && sibling.nodeName !== 'B') {
+        if (sibling.nodeType === Node.TEXT_NODE) txt += sibling.textContent;
+        sibling = sibling.nextSibling;
+      }
+      const m = txt.match(/\(([^)]+)\)/);
+      let sets = '—', reps = '—';
+      if (m) {
+        const parts = m[1].split('×');
+        sets = parts[0] ? parts[0].trim() : '—';
+        reps = parts[1] ? parts[1].trim() : m[1];
+      }
+      openExModal(findExKey(name), sets, reps, '', '');
+    });
+  });
+}
+
+// Llama ahora (DOM ya listo) y también tras DOMContentLoaded como seguro
+initStaticVideoButtons();
+document.addEventListener('DOMContentLoaded', initStaticVideoButtons);
+</script>
+
+</body>
+</html>
